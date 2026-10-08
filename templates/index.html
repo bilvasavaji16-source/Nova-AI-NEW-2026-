@@ -1,2948 +1,1659 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Nevuxa AI</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        body {
-
-            margin: 0;
-
-            background: black;
-
-            color: white;
-
-            font-family:
-                Arial,
-                sans-serif;
-        }
-
-
-        /* =========================
-           SIDEBAR
-        ========================= */
-
-        .sidebar {
-
-            position: fixed;
-
-            left: 0;
-
-            top: 0;
-
-            width: 210px;
-
-            height: 100vh;
-
-            background: #111;
-
-            padding: 20px;
-
-            z-index: 20;
-        }
-
-
-        .sidebar h2 {
-
-            margin-top: 0;
-
-            margin-bottom: 25px;
-        }
-
-
-        .sidebar button {
-
-            width: 100%;
-
-            padding: 12px;
-
-            margin-bottom: 10px;
-
-            background: #222;
-
-            color: white;
-
-            border: 1px solid #444;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            text-align: left;
-        }
-
-
-        .sidebar button:hover {
-
-            background: #333;
-        }
-
-
-        /* =========================
-           PYTHON ARROW
-        ========================= */
-
-        .python-toggle {
-
-            position: fixed;
-
-            left: 210px;
-
-            top: 50%;
-
-            transform:
-                translateY(-50%);
-
-            width: 35px;
-
-            height: 55px;
-
-            background: transparent;
-
-            color: #aaa;
-
-            border: none;
-
-            font-size: 25px;
-
-            cursor: pointer;
-
-            z-index: 30;
-        }
-
-
-        .python-toggle:hover {
-
-            color: white;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-
-            margin-left: 210px;
-
-            min-height: 100vh;
-
-            padding: 30px;
-
-            padding-bottom: 110px;
-        }
-
-
-        #chat {
-
-            max-width: 900px;
-
-            margin: 30px auto;
-        }
-
-
-        .message {
-
-            display: flex;
-
-            margin: 15px 0;
-        }
-
-
-        .message.user {
-
-            justify-content: flex-end;
-        }
-
-
-        .message.nova {
-
-            justify-content: flex-start;
-        }
-
-
-        .bubble {
-
-            max-width: 70%;
-
-            padding: 12px 16px;
-
-            border-radius: 14px;
-
-            line-height: 1.5;
-
-            white-space: pre-wrap;
-        }
-
-
-        .user .bubble {
-
-            background: #333;
-        }
-
-
-        .nova .bubble {
-
-            background: #181818;
-
-            border: 1px solid #333;
-        }
-
-
-        /* =========================
-           CHAT BOX
-        ========================= */
-
-        .chat-box {
-
-            position: fixed;
-
-            bottom: 20px;
-
-            left: 240px;
-
-            right: 30px;
-
-            display: flex;
-
-            gap: 10px;
-
-            background: black;
-
-            z-index: 10;
-        }
-
-
-        .attach-button {
-
-            width: 52px;
-
-            padding: 8px;
-
-            background: #222;
-
-            color: white;
-
-            border: 1px solid #444;
-
-            border-radius: 8px;
-
-            font-size: 28px;
-
-            cursor: pointer;
-        }
-
-
-        .attach-button:hover {
-
-            background: #333;
-        }
-
-
-        .chat-box input[type="text"] {
-
-            flex: 1;
-
-            padding: 15px;
-
-            background: #222;
-
-            color: white;
-
-            border: 1px solid #444;
-
-            border-radius: 8px;
-
-            font-size: 16px;
-
-            outline: none;
-        }
-
-
-        .chat-box button.send {
-
-            padding: 15px 25px;
-
-            background: #333;
-
-            color: white;
-
-            border: 1px solid #555;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-        }
-
-
-        .chat-box button.send:hover {
-
-            background: #444;
-        }
-
-
-        /* =========================
-           PLUS MENU
-        ========================= */
-
-        .plus-menu {
-
-            position: fixed;
-
-            bottom: 75px;
-
-            left: 240px;
-
-            display: none;
-
-            flex-direction: column;
-
-            gap: 6px;
-
-            padding: 8px;
-
-            background: #181818;
-
-            border: 1px solid #444;
-
-            border-radius: 12px;
-
-            width: 210px;
-
-            z-index: 1000;
-        }
-
-
-        .plus-menu button {
-
-            padding: 10px;
-
-            background: #222;
-
-            color: white;
-
-            border: none;
-
-            border-radius: 8px;
-
-            text-align: left;
-
-            cursor: pointer;
-        }
-
-
-        .plus-menu button:hover {
-
-            background: #333;
-        }
-
-
-        #fileInput {
-
-            display: none;
-        }
-
-
-        #fileName {
-
-            position: fixed;
-
-            bottom: 75px;
-
-            left: 240px;
-
-            color: #aaa;
-
-            font-size: 13px;
-        }
-
-
-        /* =========================
-           PYTHON PANEL
-        ========================= */
-
-        .python-panel {
-
-            position: fixed;
-
-            top: 0;
-
-            right: -520px;
-
-            width: 520px;
-
-            height: 100vh;
-
-            background: #101010;
-
-            border-left: 1px solid #333;
-
-            z-index: 25;
-
-            transition:
-                right 0.25s;
-
-            display: flex;
-
-            flex-direction: column;
-        }
-
-
-        .python-panel.open {
-
-            right: 0;
-        }
-
-
-        .python-header {
-
-            height: 60px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            padding: 0 18px;
-
-            border-bottom:
-                1px solid #333;
-        }
-
-
-        .python-header h2 {
-
-            margin: 0;
-
-            font-size: 18px;
-        }
-
-
-        .close-python {
-
-            background: transparent;
-
-            border: none;
-
-            color: #aaa;
-
-            font-size: 22px;
-
-            cursor: pointer;
-        }
-
-
-        .close-python:hover {
-
-            color: white;
-        }
-
-
-        .code-area {
-
-            flex: 1;
-
-            padding: 15px;
-
-            display: flex;
-        }
-
-
-        #pythonCode {
-
-            width: 100%;
-
-            height: 100%;
-
-            resize: none;
-
-            background: #080808;
-
-            color: #eee;
-
-            border: 1px solid #333;
-
-            border-radius: 8px;
-
-            padding: 15px;
-
-            font-family:
-                Consolas,
-                monospace;
-
-            font-size: 14px;
-
-            line-height: 1.5;
-
-            outline: none;
-        }
-
-
-        .python-controls {
-
-            padding: 12px 15px;
-
-            border-top:
-                1px solid #333;
-        }
-
-
-        #runPython {
-
-            width: 100%;
-
-            padding: 12px;
-
-            background: #252525;
-
-            color: white;
-
-            border: 1px solid #444;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            font-size: 15px;
-        }
-
-
-        #runPython:hover {
-
-            background: #333;
-        }
-
-
-        .output-title {
-
-            padding:
-                10px 15px 0;
-
-            color: #aaa;
-
-            font-size: 13px;
-        }
-
-
-        #pythonOutput {
-
-            margin:
-                8px 15px 15px;
-
-            min-height: 100px;
-
-            max-height: 180px;
-
-            overflow: auto;
-
-            background: #080808;
-
-            border: 1px solid #333;
-
-            border-radius: 8px;
-
-            padding: 12px;
-
-            white-space: pre-wrap;
-
-            font-family:
-                Consolas,
-                monospace;
-
-            font-size: 13px;
-        }
-
-
-        /* =========================
-           SETTINGS PANEL
-        ========================= */
-
-        .settings-panel {
-
-            position: fixed;
-
-            top: 0;
-
-            right: -460px;
-
-            width: 460px;
-
-            height: 100vh;
-
-            background: #101010;
-
-            border-left:
-                1px solid #333;
-
-            z-index: 2000;
-
-            transition:
-                right 0.25s;
-
-            overflow-y: auto;
-        }
-
-
-        .settings-panel.open {
-
-            right: 0;
-        }
-
-
-        .settings-header {
-
-            position: sticky;
-
-            top: 0;
-
-            height: 65px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            padding:
-                0 20px;
-
-            background: #101010;
-
-            border-bottom:
-                1px solid #333;
-
-            z-index: 5;
-        }
-
-
-        .settings-header h2 {
-
-            margin: 0;
-
-            font-size: 20px;
-        }
-
-
-        .settings-back {
-
-            width: 38px;
-
-            height: 38px;
-
-            background: #222;
-
-            color: white;
-
-            border: 1px solid #444;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            font-size: 20px;
-        }
-
-
-        .settings-back:hover {
-
-            background: #333;
-        }
-
-
-        .settings-content {
-
-            padding: 20px;
-        }
-
-
-        /* =========================
-           SETTINGS CATEGORIES
-        ========================= */
-
-        .settings-category {
-
-            width: 100%;
-
-            padding: 16px;
-
-            margin-bottom: 9px;
-
-            background: #181818;
-
-            color: white;
-
-            border:
-                1px solid #333;
-
-            border-radius: 10px;
-
-            text-align: left;
-
-            cursor: pointer;
-        }
-
-
-        .settings-category:hover {
-
-            background: #242424;
-        }
-
-
-        .settings-category-title {
-
-            font-size: 15px;
-
-            font-weight: bold;
-
-            margin-bottom: 5px;
-        }
-
-
-        .settings-category-description {
-
-            color: #888;
-
-            font-size: 13px;
-
-            line-height: 1.4;
-        }
-
-
-        /* =========================
-           SETTINGS PAGES
-        ========================= */
-
-        .settings-page {
-
-            display: none;
-        }
-
-
-        .settings-page.active {
-
-            display: block;
-        }
-
-
-        .settings-page h3 {
-
-            margin:
-                5px 0 8px;
-
-            font-size: 20px;
-        }
-
-
-        .settings-description {
-
-            color: #999;
-
-            line-height: 1.5;
-
-            margin-bottom: 20px;
-        }
-
-
-        .settings-option {
-
-            padding: 16px 0;
-
-            border-bottom:
-                1px solid #292929;
-        }
-
-
-        .settings-option:last-child {
-
-            border-bottom: none;
-        }
-
-
-        .settings-option-title {
-
-            font-size: 15px;
-
-            margin-bottom: 5px;
-        }
-
-
-        .settings-option-description {
-
-            color: #888;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-        }
-
-
-        .settings-value {
-
-            margin-top: 8px;
-
-            display: inline-block;
-
-            padding:
-                5px 9px;
-
-            background: #222;
-
-            border:
-                1px solid #444;
-
-            border-radius: 6px;
-
-            color: #ccc;
-
-            font-size: 12px;
-        }
-
-
-        /* =========================
-           SETTINGS SWITCH
-        ========================= */
-
-        .setting-row {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            gap: 15px;
-        }
-
-
-        .setting-switch {
-
-            width: 45px;
-
-            height: 24px;
-
-            position: relative;
-
-            appearance: none;
-
-            background: #333;
-
-            border-radius: 20px;
-
-            cursor: pointer;
-
-            border:
-                1px solid #555;
-        }
-
-
-        .setting-switch::after {
-
-            content: "";
-
-            position: absolute;
-
-            width: 18px;
-
-            height: 18px;
-
-            top: 2px;
-
-            left: 2px;
-
-            background: white;
-
-            border-radius: 50%;
-
-            transition:
-                left 0.2s;
-        }
-
-
-        .setting-switch:checked {
-
-            background: #666;
-        }
-
-
-        .setting-switch:checked::after {
-
-            left: 23px;
-        }
-
-
-        /* =========================
-           LOGOUT
-        ========================= */
-
-        .logout-button {
-
-            width: 100%;
-
-            padding: 13px;
-
-            margin-top: 20px;
-
-            background: #252525;
-
-            color: white;
-
-            border:
-                1px solid #555;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            font-size: 15px;
-        }
-
-
-        .logout-button:hover {
-
-            background: #3a3a3a;
-        }
-
-
-        /* =========================
-           ABOUT POPUP
-        ========================= */
-
-        .about-overlay {
-
-            position: fixed;
-
-            inset: 0;
-
-            background:
-                rgba(0, 0, 0, 0.75);
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            z-index: 3000;
-        }
-
-
-        .about-overlay.open {
-
-            display: flex;
-        }
-
-
-        .about-box {
-
-            width: 400px;
-
-            max-width: 90%;
-
-            background: #181818;
-
-            border:
-                1px solid #444;
-
-            border-radius: 14px;
-
-            padding: 25px;
-
-            text-align: center;
-        }
-
-
-        .about-box h2 {
-
-            margin-top: 0;
-        }
-
-
-        .about-box p {
-
-            color: #999;
-
-            line-height: 1.5;
-        }
-
-
-        .about-close {
-
-            margin-top: 15px;
-
-            padding:
-                10px 20px;
-
-            background: #292929;
-
-            color: white;
-
-            border:
-                1px solid #444;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-        }
-
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 700px) {
-
-            .sidebar {
-
-                width: 170px;
-
-                padding: 15px;
-            }
-
-
-            .main {
-
-                margin-left: 170px;
-
-                padding: 20px;
-            }
-
-
-            .python-toggle {
-
-                left: 170px;
-            }
-
-
-            .chat-box {
-
-                left: 190px;
-
-                right: 15px;
-            }
-
-
-            .plus-menu {
-
-                left: 190px;
-            }
-
-
-            #fileName {
-
-                left: 190px;
-            }
-
-
-            .settings-panel {
-
-                width: 100%;
-
-                right: -100%;
-            }
-
-
-            .python-panel {
-
-                width: 100%;
-
-                right: -100%;
-            }
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nevuxa AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    width: 250px;
+    background: #090909;
+    border-right: 1px solid #222;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.new-chat {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    background: #151515;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.new-chat:hover {
+    background: #222;
+}
+
+.sidebar-section {
+    color: #777;
+    font-size: 12px;
+    margin: 12px 8px 6px;
+}
+
+.sidebar-button {
+    width: 100%;
+    text-align: left;
+    padding: 11px;
+    border: none;
+    background: transparent;
+    color: #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 3px;
+}
+
+.sidebar-button:hover {
+    background: #171717;
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+/* ================= MAIN ================= */
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.topbar {
+    height: 60px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.top-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.top-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 9px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    background: #222;
+}
+
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}
+
+.welcome {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.welcome h1 {
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #888;
+}
+
+/* ================= MESSAGES ================= */
+
+.message {
+    max-width: 850px;
+    margin: 0 auto 20px;
+    padding: 15px 18px;
+    border-radius: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.message.user {
+    background: #171717;
+}
+
+.message.nova {
+    background: #0d0d0d;
+    border: 1px solid #222;
+}
+
+/* ================= INPUT ================= */
+
+.input-area {
+    padding: 15px 20px 20px;
+    border-top: 1px solid #222;
+}
+
+.input-box {
+    max-width: 900px;
+    margin: auto;
+    position: relative;
+}
+
+.message-input {
+    width: 100%;
+    min-height: 55px;
+    max-height: 180px;
+    resize: none;
+    border-radius: 14px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    padding: 16px 120px 16px 50px;
+    outline: none;
+    font-size: 15px;
+}
+
+.message-input:focus {
+    border-color: #555;
+}
+
+.input-button {
+    position: absolute;
+    bottom: 8px;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.input-button:hover {
+    background: #222;
+    color: white;
+}
+
+.plus-button {
+    left: 8px;
+}
+
+.voice-button {
+    right: 50px;
+}
+
+.send-button {
+    right: 8px;
+    background: white;
+    color: black;
+}
+
+.send-button:hover {
+    background: #ddd;
+    color: black;
+}
+
+/* ================= PLUS MENU ================= */
+
+.plus-menu {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    width: 230px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 8px;
+    z-index: 20;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+
+.plus-menu.show {
+    display: block;
+}
+
+.plus-item {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: white;
+    text-align: left;
+    padding: 11px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.plus-item:hover {
+    background: #222;
+}
+
+/* ================= PYTHON PANEL ================= */
+
+.python-panel {
+    display: none;
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 400px;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 15px;
+    z-index: 30;
+    padding: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.6);
+}
+
+.python-panel.show {
+    display: block;
+}
+
+.python-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.python-title {
+    font-weight: bold;
+}
+
+.python-code {
+    width: 100%;
+    height: 220px;
+    resize: vertical;
+    background: #050505;
+    color: #ddd;
+    border: 1px solid #333;
+    border-radius: 9px;
+    padding: 12px;
+    font-family: Consolas, monospace;
+    outline: none;
+}
+
+.run-python {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.python-output {
+    margin-top: 10px;
+    background: #050505;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 50px;
+    white-space: pre-wrap;
+    font-family: Consolas, monospace;
+    color: #bbb;
+}
+
+/* ================= CALCULATOR ================= */
+
+.calculator-panel {
+    display: none;
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 330px;
+    background: #0c0c0c;
+    border: 1px solid #333;
+    border-radius: 18px;
+    padding: 15px;
+    z-index: 40;
+    box-shadow: 0 15px 50px rgba(0,0,0,.7);
+}
+
+.calculator-panel.show {
+    display: block;
+}
+
+.calculator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.calculator-title {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.close-calculator {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 7px;
+}
+
+.close-calculator:hover {
+    background: #222;
+    color: white;
+}
+
+.calculator-display {
+    width: 100%;
+    height: 65px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #050505;
+    color: white;
+    font-size: 25px;
+    text-align: right;
+    padding: 10px;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+.calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+}
+
+.calc-button {
+    height: 52px;
+    border: 1px solid #292929;
+    border-radius: 9px;
+    background: #151515;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.calc-button:hover {
+    background: #252525;
+}
+
+.calc-button.operator {
+    background: #202020;
+}
+
+.calc-button.equals {
+    background: white;
+    color: black;
+}
+
+.calc-button.equals:hover {
+    background: #ddd;
+}
+
+.calc-button.clear {
+    color: #ff7777;
+}
+
+.calc-button.backspace {
+    color: #ffcc66;
+}
+
+/* ================= SETTINGS ================= */
+
+.settings-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 50;
+}
+
+.settings-panel.show {
+    display: flex;
+}
+
+.settings-sidebar {
+    width: 240px;
+    border-right: 1px solid #222;
+    padding: 20px;
+}
+
+.settings-sidebar h2 {
+    margin-top: 0;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.settings-item {
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.settings-item:hover,
+.settings-item.active {
+    background: #171717;
+    color: white;
+}
+
+.settings-page {
+    display: none;
+}
+
+.settings-page.active {
+    display: block;
+}
+
+.close-settings {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ================= ABOUT ================= */
+
+.about-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 60;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-overlay.show {
+    display: flex;
+}
+
+.about-box {
+    width: 420px;
+    max-width: calc(100% - 30px);
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 25px;
+}
+
+.about-box h2 {
+    margin-top: 0;
+}
+
+.about-box p {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.about-close {
+    float: right;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* ================= FILE ================= */
+
+.file-name {
+    max-width: 900px;
+    margin: 0 auto 8px;
+    color: #888;
+    font-size: 12px;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+    .sidebar {
+        display: none;
+    }
+
+    .chat-area {
+        padding: 15px;
+    }
+
+    .welcome h1 {
+        font-size: 30px;
+    }
+
+    .python-panel,
+    .calculator-panel {
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+
+    .settings-sidebar {
+        width: 180px;
+    }
+
+    .settings-content {
+        padding: 20px;
+    }
+}
+</style>
 </head>
-
 
 <body>
 
+<div class="app">
 
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-    <div class="sidebar">
+        <div class="logo">Nevuxa AI</div>
 
-        <h2>Nevuxa AI</h2>
-
-
-        <button
-            onclick="newChat()"
-        >
-            ✨ New Chat
+        <button class="new-chat" onclick="newChat()">
+            + New Chat
         </button>
 
+        <div class="sidebar-section">CHATS</div>
 
-        <button
-            onclick="openChats()"
-        >
-            💬 Chats
+        <button class="sidebar-button" onclick="newChat()">
+            💬 New conversation
         </button>
 
+        <div class="sidebar-section">TOOLS</div>
 
-        <button
-            onclick="openSettings()"
-        >
-            ⚙️ Settings
+        <button class="sidebar-button" onclick="togglePython()">
+            🐍 Python
         </button>
 
+        <button class="sidebar-button" onclick="openCalculator()">
+            🧮 Calculator
+        </button>
 
-        <button
-            onclick="openAbout()"
-        >
-            ℹ️ About Nevuxa AI
+        <div class="sidebar-section">APP</div>
+
+        <button class="sidebar-button" onclick="openSettings()">
+            ⚙ Settings
+        </button>
+
+        <button class="sidebar-button" onclick="openAbout()">
+            ℹ About Nevuxa
+        </button>
+
+        <div class="sidebar-bottom">
+            <button class="sidebar-button" onclick="logoutNova()">
+                🚪 Log out
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="topbar">
+
+            <div class="top-title">
+                Nevuxa AI
+            </div>
+
+            <div class="top-actions">
+                <button class="icon-button" onclick="openCalculator()" title="Calculator">
+                    🧮
+                </button>
+
+                <button class="icon-button" onclick="togglePython()" title="Python">
+                    🐍
+                </button>
+            </div>
+
+        </div>
+
+        <div class="chat-area" id="chatArea">
+
+            <div class="welcome" id="welcome">
+
+                <h1>Nevuxa AI</h1>
+
+                <p>
+                    Your intelligent AI assistant.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="input-area">
+
+            <div class="input-box">
+
+                <div class="plus-menu" id="plusMenu">
+
+                    <button class="plus-item" onclick="document.getElementById('fileInput').click()">
+                        📎 Add file
+                    </button>
+
+                    <button class="plus-item" onclick="document.getElementById('imageInput').click()">
+                        🖼 Add image
+                    </button>
+
+                    <button class="plus-item" onclick="openMaps()">
+                        📍 Maps
+                    </button>
+
+                    <button class="plus-item" onclick="openCalculator()">
+                        🧮 Calculator
+                    </button>
+
+                    <button class="plus-item" onclick="createImage()">
+                        🎨 Create image
+                    </button>
+
+                    <button class="plus-item" onclick="webSearch()">
+                        🌐 Web search
+                    </button>
+
+                </div>
+
+                <textarea
+                    id="messageInput"
+                    class="message-input"
+                    placeholder="Message Nevuxa AI..."
+                    rows="1"
+                ></textarea>
+
+                <button
+                    class="input-button plus-button"
+                    onclick="togglePlusMenu()"
+                    title="More"
+                >
+                    +
+                </button>
+
+                <button
+                    class="input-button voice-button"
+                    onclick="startVoice()"
+                    title="Voice"
+                >
+                    🎙
+                </button>
+
+                <button
+                    class="input-button send-button"
+                    onclick="sendMessage()"
+                    title="Send"
+                >
+                    ➤
+                </button>
+
+            </div>
+
+            <input
+                type="file"
+                id="fileInput"
+                style="display:none"
+                onchange="fileSelected(this)"
+            >
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                style="display:none"
+                onchange="fileSelected(this)"
+            >
+
+            <div id="fileName" class="file-name"></div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- PYTHON PANEL -->
+
+<div class="python-panel" id="pythonPanel">
+
+    <div class="python-header">
+
+        <div class="python-title">
+            Python
+        </div>
+
+        <button class="close-calculator" onclick="togglePython()">
+            ✕
         </button>
 
     </div>
 
+    <textarea
+        id="pythonCode"
+        class="python-code"
+        spellcheck="false"
+>print("Hello from Nevuxa AI!")</textarea>
 
-    <!-- =========================
-         PYTHON ARROW
-    ========================= -->
-
-    <button
-        class="python-toggle"
-        onclick="togglePython()"
-        title="Python"
-    >
-        ←
+    <button class="run-python" onclick="runPython()">
+        Run Python
     </button>
 
-
-    <!-- =========================
-         MAIN NEVUXA AI
-    ========================= -->
-
-    <div class="main">
-
-        <h1>Nevuxa AI</h1>
-
-        <p>Your AI assistant.</p>
-
-        <div id="chat"></div>
-
+    <div id="pythonOutput" class="python-output">
+        Output will appear here.
     </div>
 
+</div>
 
-    <!-- =========================
-         FILE NAME
-    ========================= -->
+<!-- CALCULATOR -->
 
-    <div id="fileName"></div>
+<div class="calculator-panel" id="calculatorPanel">
 
+    <div class="calculator-header">
 
-    <!-- =========================
-         PLUS MENU
-    ========================= -->
-
-    <div
-        id="plusMenu"
-        class="plus-menu"
-    >
+        <div class="calculator-title">
+            Calculator
+        </div>
 
         <button
-            onclick="chooseImage()"
+            class="close-calculator"
+            onclick="closeCalculator()"
         >
-            📷 Add image
-        </button>
-
-
-        <button
-            onclick="chooseFile()"
-        >
-            📄 Add file
-        </button>
-
-
-        <button
-            onclick="openMaps()"
-        >
-            🗺️ Maps
-        </button>
-
-
-        <button
-            onclick="startVoice()"
-        >
-            🎤 Voice
-        </button>
-
-
-        <button
-            onclick="notReady('Create image')"
-        >
-            🎨 Create image
-        </button>
-
-
-        <button
-            onclick="notReady('Web search')"
-        >
-            🔎 Web search
+            ✕
         </button>
 
     </div>
-
-
-    <!-- =========================
-         FILE INPUT
-    ========================= -->
 
     <input
-        type="file"
-        id="fileInput"
-        accept="image/*,.txt,.csv,.json"
-        onchange="showFileName()"
+        type="text"
+        id="calculatorDisplay"
+        class="calculator-display"
+        value=""
+        readonly
     >
 
+    <div class="calculator-buttons">
 
-    <!-- =========================
-         CHAT BOX
-    ========================= -->
+        <button class="calc-button clear" onclick="calculatorClear()">
+            C
+        </button>
 
-    <div class="chat-box">
+        <button class="calc-button backspace" onclick="calculatorBackspace()">
+            ⌫
+        </button>
 
-        <button
-            class="attach-button"
-            onclick="togglePlusMenu()"
-        >
+        <button class="calc-button operator" onclick="calculatorInput('%')">
+            %
+        </button>
+
+        <button class="calc-button operator" onclick="calculatorInput('/')">
+            ÷
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('7')">
+            7
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('8')">
+            8
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('9')">
+            9
+        </button>
+
+        <button class="calc-button operator" onclick="calculatorInput('*')">
+            ×
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('4')">
+            4
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('5')">
+            5
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('6')">
+            6
+        </button>
+
+        <button class="calc-button operator" onclick="calculatorInput('-')">
+            −
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('1')">
+            1
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('2')">
+            2
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput('3')">
+            3
+        </button>
+
+        <button class="calc-button operator" onclick="calculatorInput('+')">
             +
         </button>
 
+        <button class="calc-button" onclick="calculatorInput('(')">
+            (
+        </button>
 
-        <input
-            type="text"
-            id="messageInput"
-            placeholder="Message Nevuxa AI..."
-        >
+        <button class="calc-button" onclick="calculatorInput('0')">
+            0
+        </button>
 
+        <button class="calc-button" onclick="calculatorInput('.')">
+            .
+        </button>
+
+        <button class="calc-button" onclick="calculatorInput(')')">
+            )
+        </button>
 
         <button
-            class="send"
-            onclick="sendMessage()"
+            class="calc-button equals"
+            style="grid-column: span 4;"
+            onclick="calculatorCalculate()"
         >
-            Send
+            =
         </button>
 
     </div>
 
+</div>
 
-    <!-- =========================
-         PYTHON PANEL
-    ========================= -->
+<!-- SETTINGS -->
 
-    <div
-        id="pythonPanel"
-        class="python-panel"
+<div class="settings-panel" id="settingsPanel">
+
+    <button
+        class="close-settings"
+        onclick="closeSettings()"
     >
+        ✕
+    </button>
 
-        <div class="python-header">
+    <div class="settings-sidebar">
 
-            <h2>🐍 Python</h2>
+        <h2>Settings</h2>
 
-
-            <button
-                class="close-python"
-                onclick="togglePython()"
-            >
-                →
-            </button>
-
+        <div
+            class="settings-item active"
+            onclick="showSettingsPage('account', this)"
+        >
+            Account
         </div>
 
-
-        <div class="code-area">
-
-            <textarea
-                id="pythonCode"
-                spellcheck="false"
-                placeholder="Write Python here..."
-            >print("Hello from Nevuxa AI!")</textarea>
-
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('content', this)"
+        >
+            Content & Social
         </div>
 
-
-        <div class="python-controls">
-
-            <button
-                id="runPython"
-                onclick="runPython()"
-            >
-                ▶ Run Python
-            </button>
-
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('privacy', this)"
+        >
+            Data & Privacy
         </div>
 
-
-        <div class="output-title">
-            Output
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('devices', this)"
+        >
+            Devices
         </div>
 
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('notifications', this)"
+        >
+            Notifications
+        </div>
 
-        <pre
-            id="pythonOutput"
-        >Run your Python code to see the output.</pre>
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('general', this)"
+        >
+            General
+        </div>
+
+        <div
+            class="settings-item"
+            onclick="showSettingsPage('aboutSettings', this)"
+        >
+            About
+        </div>
 
     </div>
 
+    <div class="settings-content">
 
-    <!-- =========================
-         SETTINGS PANEL
-    ========================= -->
+        <div class="settings-page active" id="account">
 
-    <div
-        id="settingsPanel"
-        class="settings-panel"
-    >
+            <h1>Account</h1>
 
-
-        <!-- SETTINGS HEADER -->
-
-        <div class="settings-header">
-
-            <button
-                class="settings-back"
-                onclick="settingsBack()"
-            >
-                ←
-            </button>
-
-
-            <h2
-                id="settingsTitle"
-            >
-                Settings
-            </h2>
+            <p>
+                Manage your Nevuxa AI account.
+            </p>
 
         </div>
 
+        <div class="settings-page" id="content">
 
-        <div class="settings-content">
+            <h1>Content & Social</h1>
 
+            <p>
+                Manage content and social features.
+            </p>
 
-            <!-- =====================
-                 SETTINGS HOME
-            ====================== -->
+        </div>
 
-            <div
-                id="settingsMenu"
-                class="settings-page active"
-            >
+        <div class="settings-page" id="privacy">
 
+            <h1>Data & Privacy</h1>
 
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('account')
-                    "
-                >
+            <p>
+                Manage your data and privacy settings.
+            </p>
 
-                    <div
-                        class="settings-category-title"
-                    >
-                        👤 Account
-                    </div>
+        </div>
 
-                    <div
-                        class="settings-category-description"
-                    >
-                        Email, password and sign-in
-                        options
-                    </div>
+        <div class="settings-page" id="devices">
 
-                </button>
+            <h1>Devices</h1>
 
+            <p>
+                Manage devices connected to Nevuxa AI.
+            </p>
 
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('content')
-                    "
-                >
+        </div>
 
-                    <div
-                        class="settings-category-title"
-                    >
-                        🎨 Content & Social
-                    </div>
+        <div class="settings-page" id="notifications">
 
-                    <div
-                        class="settings-category-description"
-                    >
-                        Content, sharing and social
-                        features
-                    </div>
+            <h1>Notifications</h1>
 
-                </button>
+            <p>
+                Manage notification preferences.
+            </p>
 
+        </div>
 
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('privacy')
-                    "
-                >
+        <div class="settings-page" id="general">
 
-                    <div
-                        class="settings-category-title"
-                    >
-                        🔒 Data & Privacy
-                    </div>
+            <h1>General</h1>
 
-                    <div
-                        class="settings-category-description"
-                    >
-                        Chat history and data controls
-                    </div>
+            <p>
+                General Nevuxa AI settings.
+            </p>
 
-                </button>
+        </div>
 
+        <div class="settings-page" id="aboutSettings">
 
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('devices')
-                    "
-                >
+            <h1>About Nevuxa AI</h1>
 
-                    <div
-                        class="settings-category-title"
-                    >
-                        💻 Devices
-                    </div>
-
-                    <div
-                        class="settings-category-description"
-                    >
-                        Devices currently signed in
-                    </div>
-
-                </button>
-
-
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('notifications')
-                    "
-                >
-
-                    <div
-                        class="settings-category-title"
-                    >
-                        🔔 Notifications
-                    </div>
-
-                    <div
-                        class="settings-category-description"
-                    >
-                        Notification preferences
-                    </div>
-
-                </button>
-
-
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('general')
-                    "
-                >
-
-                    <div
-                        class="settings-category-title"
-                    >
-                        ⚙️ General
-                    </div>
-
-                    <div
-                        class="settings-category-description"
-                    >
-                        Language and general preferences
-                    </div>
-
-                </button>
-
-
-                <button
-                    class="settings-category"
-                    onclick="
-                        openSettingsPage('about')
-                    "
-                >
-
-                    <div
-                        class="settings-category-title"
-                    >
-                        ℹ️ About
-                    </div>
-
-                    <div
-                        class="settings-category-description"
-                    >
-                        Nevuxa AI version and information
-                    </div>
-
-                </button>
-
-
-                <button
-                    class="logout-button"
-                    onclick="logoutNova()"
-                >
-                    🚪 Log out
-                </button>
-
-            </div>
-
-
-            <!-- =====================
-                 ACCOUNT
-            ====================== -->
-
-            <div
-                id="settings-account"
-                class="settings-page"
-            >
-
-                <h3>👤 Account</h3>
-
-
-                <p class="settings-description">
-                    Manage your Nevuxa AI account and
-                    sign-in settings.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Email
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Your Nevuxa AI account email
-                        address.
-                    </div>
-
-
-                    <span class="settings-value">
-                        Your account email
-                    </span>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Password
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Your password is securely
-                        stored by Nevuxa AI.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Sign-in options
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Additional sign-in methods
-                        can be added later.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Account security
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Security controls for your
-                        Nevuxa AI account.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 CONTENT & SOCIAL
-            ====================== -->
-
-            <div
-                id="settings-content"
-                class="settings-page"
-            >
-
-                <h3>🎨 Content & Social</h3>
-
-
-                <p class="settings-description">
-                    Control content and social
-                    features in Nevuxa AI.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div class="setting-row">
-
-                        <div>
-
-                            <div
-                                class="settings-option-title"
-                            >
-                                Content preferences
-                            </div>
-
-
-                            <div
-                                class="settings-option-description"
-                            >
-                                Customize the type of
-                                content Nevuxa AI shows you.
-                            </div>
-
-                        </div>
-
-
-                        <input
-                            type="checkbox"
-                            class="setting-switch"
-                            checked
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Sharing
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Sharing controls will be
-                        available here.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Social features
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Social features can be
-                        connected to Nevuxa AI later.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 DATA & PRIVACY
-            ====================== -->
-
-            <div
-                id="settings-privacy"
-                class="settings-page"
-            >
-
-                <h3>🔒 Data & Privacy</h3>
-
-
-                <p class="settings-description">
-                    Control your conversations and
-                    Nevuxa AI data.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div class="setting-row">
-
-                        <div>
-
-                            <div
-                                class="settings-option-title"
-                            >
-                                Chat history
-                            </div>
-
-
-                            <div
-                                class="settings-option-description"
-                            >
-                                Controls for saving
-                                conversations.
-                            </div>
-
-                        </div>
-
-
-                        <input
-                            type="checkbox"
-                            class="setting-switch"
-                            checked
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Data controls
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Manage how Nevuxa AI handles
-                        your data.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Privacy
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Privacy controls will be
-                        expanded as Nevuxa AI develops.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Delete account
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Account deletion controls
-                        will be added later.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 DEVICES
-            ====================== -->
-
-            <div
-                id="settings-devices"
-                class="settings-page"
-            >
-
-                <h3>💻 Devices</h3>
-
-
-                <p class="settings-description">
-                    View devices currently signed
-                    in to Nevuxa AI.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        This device
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Current Nevuxa AI browser session.
-                    </div>
-
-
-                    <span class="settings-value">
-                        Current session
-                    </span>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Other devices
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Other signed-in devices will
-                        appear here when device
-                        management is connected.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 NOTIFICATIONS
-            ====================== -->
-
-            <div
-                id="settings-notifications"
-                class="settings-page"
-            >
-
-                <h3>🔔 Notifications</h3>
-
-
-                <p class="settings-description">
-                    Control Nevuxa AI notifications.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div class="setting-row">
-
-                        <div>
-
-                            <div
-                                class="settings-option-title"
-                            >
-                                Notifications
-                            </div>
-
-
-                            <div
-                                class="settings-option-description"
-                            >
-                                Enable or disable Nevuxa AI
-                                notifications.
-                            </div>
-
-                        </div>
-
-
-                        <input
-                            type="checkbox"
-                            class="setting-switch"
-                            checked
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Notification preferences
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        More detailed notification
-                        controls can be added later.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 GENERAL
-            ====================== -->
-
-            <div
-                id="settings-general"
-                class="settings-page"
-            >
-
-                <h3>⚙️ General</h3>
-
-
-                <p class="settings-description">
-                    General Nevuxa AI preferences.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Language
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        The language Nevuxa AI currently
-                        uses.
-                    </div>
-
-
-                    <span class="settings-value">
-                        English (US)
-                    </span>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Appearance
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Choose how Nevuxa AI looks.
-                    </div>
-
-
-                    <span class="settings-value">
-                        Dark
-                    </span>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        General preferences
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Additional Nevuxa AI preferences
-                        can be added here.
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 ABOUT
-            ====================== -->
-
-            <div
-                id="settings-about"
-                class="settings-page"
-            >
-
-                <h3>ℹ️ About Nevuxa AI</h3>
-
-
-                <p class="settings-description">
-                    Information about your Nevuxa AI
-                    assistant.
-                </p>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Version
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Current Nevuxa AI version.
-                    </div>
-
-
-                    <span class="settings-value">
-                        Nevuxa AI 1.0
-                    </span>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        About Nevuxa AI
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Nevuxa AI is your personal AI
-                        assistant built with Flask
-                        and an AI inference API.
-                    </div>
-
-                </div>
-
-
-                <div class="settings-option">
-
-                    <div
-                        class="settings-option-title"
-                    >
-                        Credits
-                    </div>
-
-
-                    <div
-                        class="settings-option-description"
-                    >
-                        Nevuxa AI project.
-                    </div>
-
-                </div>
-
-            </div>
+            <p>
+                Nevuxa AI is your intelligent assistant for
+                learning, creating, coding, calculating and solving problems.
+            </p>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- =========================
-         ABOUT POPUP
-    ========================= -->
+<!-- ABOUT -->
 
-    <div
-        id="aboutOverlay"
-        class="about-overlay"
-    >
+<div class="about-overlay" id="aboutOverlay">
 
-        <div class="about-box">
+    <div class="about-box">
 
-            <h2>
-                ✨ Nevuxa AI
-            </h2>
+        <button
+            class="about-close"
+            onclick="closeAbout()"
+        >
+            ✕
+        </button>
 
+        <h2>Nevuxa AI</h2>
 
-            <p>
-                Your personal AI assistant.
-            </p>
+        <p>
+            Nevuxa is a next-generation AI assistant built
+            to help users think, learn, create, calculate,
+            code and solve problems.
+        </p>
 
-
-            <p>
-                Nevuxa AI can chat, work with files,
-                use Python and more.
-            </p>
-
-
-            <p>
-                Version 1.0
-            </p>
-
-
-            <button
-                class="about-close"
-                onclick="closeAbout()"
-            >
-                Close
-            </button>
-
-        </div>
+        <p>
+            Intelligence. Reimagined.
+        </p>
 
     </div>
 
+</div>
 
-    <script>
+<script>
 
+/* ================= CHAT ================= */
 
-        /* =========================
-           PYTHON PANEL
-        ========================= */
+let selectedFile = null;
 
-        function togglePython() {
+function addMessage(text, sender) {
 
-            const panel =
-                document.getElementById(
-                    "pythonPanel"
-                );
+    const welcome = document.getElementById("welcome");
 
+    if (welcome) {
+        welcome.remove();
+    }
 
-            panel.classList.toggle(
-                "open"
-            );
-        }
+    const chatArea = document.getElementById("chatArea");
 
+    const message = document.createElement("div");
 
-        async function runPython() {
+    message.className = "message " + sender;
 
-            const code =
-                document.getElementById(
-                    "pythonCode"
-                ).value;
+    message.textContent = text;
 
+    chatArea.appendChild(message);
 
-            const output =
-                document.getElementById(
-                    "pythonOutput"
-                );
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
 
+async function sendMessage() {
 
-            if (!code.trim()) {
+    const input = document.getElementById("messageInput");
 
-                output.textContent =
-                    "Please enter some Python code.";
+    const message = input.value.trim();
 
-                return;
-            }
+    if (!message && !selectedFile) {
+        return;
+    }
 
+    addMessage(
+        message || selectedFile.name,
+        "user"
+    );
 
-            output.textContent =
-                "Running...";
+    input.value = "";
 
+    const formData = new FormData();
 
-            try {
+    formData.append("message", message);
 
-                const response =
-                    await fetch(
-                        "/run-python",
-                        {
-                            method: "POST",
+    if (selectedFile) {
+        formData.append("file", selectedFile);
+    }
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+    selectedFile = null;
 
-                            body: JSON.stringify({
-                                code: code
-                            })
-                        }
-                    );
+    document.getElementById("fileName").textContent = "";
 
+    try {
 
-                const data =
-                    await response.json();
+        const response = await fetch("/chat", {
+            method: "POST",
+            body: formData
+        });
 
+        const data = await response.json();
 
-                output.textContent =
-                    data.output ||
-                    data.error ||
-                    "No output.";
-
-            }
-
-            catch (error) {
-
-                output.textContent =
-                    "Could not run Python.";
-            }
-        }
-
-
-        /* =========================
-           PLUS MENU
-        ========================= */
-
-        function togglePlusMenu() {
-
-            const menu =
-                document.getElementById(
-                    "plusMenu"
-                );
-
-
-            menu.style.display =
-                menu.style.display === "flex"
-                    ? "none"
-                    : "flex";
-        }
-
-
-        /* =========================
-           FILES
-        ========================= */
-
-        function chooseImage() {
-
-            const input =
-                document.getElementById(
-                    "fileInput"
-                );
-
-
-            input.accept =
-                "image/*";
-
-
-            input.click();
-
-
-            togglePlusMenu();
-        }
-
-
-        function chooseFile() {
-
-            const input =
-                document.getElementById(
-                    "fileInput"
-                );
-
-
-            input.accept =
-                ".txt,.csv,.json";
-
-
-            input.click();
-
-
-            togglePlusMenu();
-        }
-
-
-        function showFileName() {
-
-            const input =
-                document.getElementById(
-                    "fileInput"
-                );
-
-
-            const name =
-                document.getElementById(
-                    "fileName"
-                );
-
-
-            if (
-                input.files.length > 0
-            ) {
-
-                name.textContent =
-                    "Attached: " +
-                    input.files[0].name;
-
-            }
-
-            else {
-
-                name.textContent = "";
-            }
-        }
-
-
-        /* =========================
-           MAPS
-        ========================= */
-
-        function openMaps() {
-
-            togglePlusMenu();
-
-
-            window.open(
-                "https://www.google.com/maps",
-                "_blank"
-            );
-
+        if (data.reply) {
 
             addMessage(
-                "🗺️ Google Maps opened. Choose a place, then copy its Maps link and send it to Nevuxa AI.",
-                "nova"
-            );
-        }
-
-
-        /* =========================
-           VOICE
-        ========================= */
-
-        function startVoice() {
-
-            togglePlusMenu();
-
-
-            const SpeechRecognition =
-                window.SpeechRecognition ||
-                window.webkitSpeechRecognition;
-
-
-            if (!SpeechRecognition) {
-
-                addMessage(
-                    "Voice input isn't supported by this browser.",
-                    "nova"
-                );
-
-                return;
-            }
-
-
-            const recognition =
-                new SpeechRecognition();
-
-
-            recognition.lang =
-                "en-US";
-
-
-            recognition.continuous =
-                false;
-
-
-            recognition.interimResults =
-                false;
-
-
-            addMessage(
-                "🎤 I'm listening...",
+                data.reply,
                 "nova"
             );
 
-
-            recognition.onresult =
-                function(event) {
-
-                    const text =
-                        event
-                            .results[0][0]
-                            .transcript;
-
-
-                    document
-                        .getElementById(
-                            "messageInput"
-                        )
-                        .value = text;
-
-
-                    sendMessage();
-                };
-
-
-            recognition.onerror =
-                function() {
-
-                    addMessage(
-                        "I couldn't hear that. Please try again.",
-                        "nova"
-                    );
-                };
-
-
-            recognition.start();
-        }
-
-
-        /* =========================
-           OTHER BUTTONS
-        ========================= */
-
-        function notReady(feature) {
+        } else {
 
             addMessage(
-                feature +
-                " isn't connected yet.",
+                "Sorry, Nevuxa couldn't process that request.",
                 "nova"
             );
+
         }
 
+    } catch (error) {
 
-        /* =========================
-           CHAT
-        ========================= */
+        addMessage(
+            "Sorry, Nevuxa couldn't connect to the server.",
+            "nova"
+        );
 
-        function addMessage(
-            text,
-            sender
-        ) {
+    }
+}
 
-            const chat =
-                document.getElementById(
-                    "chat"
-                );
+/* ================= NEW CHAT ================= */
 
+function newChat() {
 
-            const message =
-                document.createElement(
-                    "div"
-                );
+    document.getElementById("chatArea").innerHTML = `
+        <div class="welcome" id="welcome">
+            <h1>Nevuxa AI</h1>
+            <p>Your intelligent AI assistant.</p>
+        </div>
+    `;
 
+}
 
-            message.className =
-                "message " +
-                sender;
+/* ================= PLUS MENU ================= */
 
+function togglePlusMenu() {
 
-            const bubble =
-                document.createElement(
-                    "div"
-                );
+    document
+        .getElementById("plusMenu")
+        .classList.toggle("show");
 
+}
 
-            bubble.className =
-                "bubble";
+document.addEventListener("click", function(event) {
 
+    const menu = document.getElementById("plusMenu");
 
-            bubble.textContent =
-                text;
+    const button = document.querySelector(".plus-button");
 
+    if (
+        menu &&
+        !menu.contains(event.target) &&
+        !button.contains(event.target)
+    ) {
+        menu.classList.remove("show");
+    }
 
-            message.appendChild(
-                bubble
-            );
+});
 
+/* ================= FILE ================= */
 
-            chat.appendChild(
-                message
-            );
+function fileSelected(input) {
 
+    if (!input.files || !input.files.length) {
+        return;
+    }
 
-            window.scrollTo(
-                0,
-                document.body.scrollHeight
-            );
-        }
+    selectedFile = input.files[0];
 
+    document.getElementById("fileName").textContent =
+        "Selected: " + selectedFile.name;
 
-        async function sendMessage() {
+    document
+        .getElementById("plusMenu")
+        .classList.remove("show");
 
-            const input =
-                document.getElementById(
-                    "messageInput"
-                );
+}
 
+/* ================= MAPS ================= */
 
-            const fileInput =
-                document.getElementById(
-                    "fileInput"
-                );
+function openMaps() {
 
+    window.open(
+        "https://www.google.com/maps",
+        "_blank"
+    );
 
-            const message =
-                input.value.trim();
+    document
+        .getElementById("plusMenu")
+        .classList.remove("show");
 
+}
 
-            const file =
-                fileInput.files[0];
+/* ================= VOICE ================= */
 
+function startVoice() {
 
-            if (
-                message === "" &&
-                !file
-            ) {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
-                return;
-            }
+    if (!SpeechRecognition) {
 
+        alert(
+            "Voice recognition is not supported in this browser."
+        );
 
-            let displayMessage =
-                message;
+        return;
+    }
 
+    const recognition = new SpeechRecognition();
 
-            if (file) {
+    recognition.lang = "en-US";
 
-                displayMessage +=
-                    (message ? "\n" : "") +
-                    "📎 " +
-                    file.name;
-            }
+    recognition.interimResults = false;
 
+    recognition.start();
 
-            addMessage(
-                displayMessage,
-                "user"
-            );
+    recognition.onresult = function(event) {
 
+        document.getElementById("messageInput").value =
+            event.results[0][0].transcript;
 
-            input.value = "";
+    };
 
+}
 
-            try {
+/* ================= IMAGE / WEB PLACEHOLDERS ================= */
 
-                const formData =
-                    new FormData();
+function createImage() {
 
+    addMessage(
+        "Image creation is not connected yet.",
+        "nova"
+    );
 
-                formData.append(
-                    "message",
-                    message
-                );
+    document
+        .getElementById("plusMenu")
+        .classList.remove("show");
 
+}
 
-                if (file) {
+function webSearch() {
 
-                    formData.append(
-                        "file",
-                        file
-                    );
-                }
+    addMessage(
+        "Web search is not connected yet.",
+        "nova"
+    );
 
+    document
+        .getElementById("plusMenu")
+        .classList.remove("show");
 
-                const response =
-                    await fetch(
-                        "/chat",
-                        {
-                            method: "POST",
+}
 
-                            body: formData
-                        }
-                    );
+/* ================= PYTHON ================= */
 
+function togglePython() {
 
-                const data =
-                    await response.json();
+    document
+        .getElementById("pythonPanel")
+        .classList.toggle("show");
 
+}
 
-                if (data.reply) {
+async function runPython() {
 
-                    addMessage(
-                        data.reply,
-                        "nova"
-                    );
+    const code =
+        document.getElementById("pythonCode").value;
 
-                }
+    const output =
+        document.getElementById("pythonOutput");
 
-                else {
+    output.textContent = "Running...";
 
-                    addMessage(
-                        "Nevuxa AI didn't return a response.",
-                        "nova"
-                    );
-                }
+    try {
 
-
-                fileInput.value = "";
-
-
-                document.getElementById(
-                    "fileName"
-                ).textContent = "";
-
-            }
-
-            catch (error) {
-
-                addMessage(
-                    "Sorry, Nevuxa AI couldn't connect to the server.",
-                    "nova"
-                );
-            }
-        }
-
-
-        /* =========================
-           NEW CHAT
-        ========================= */
-
-        function newChat() {
-
-            const chat =
-                document.getElementById(
-                    "chat"
-                );
-
-
-            chat.innerHTML = "";
-
-
-            addMessage(
-                "✨ New chat started.",
-                "nova"
-            );
-        }
-
-
-        /* =========================
-           CHATS
-        ========================= */
-
-        function openChats() {
-
-            addMessage(
-                "💬 Chat history isn't connected yet. We'll build the chat history system next.",
-                "nova"
-            );
-        }
-
-
-        /* =========================
-           SETTINGS
-        ========================= */
-
-        function openSettings() {
-
-            const panel =
-                document.getElementById(
-                    "settingsPanel"
-                );
-
-
-            panel.classList.add(
-                "open"
-            );
-
-
-            showSettingsMenu();
-        }
-
-
-        function closeSettings() {
-
-            const panel =
-                document.getElementById(
-                    "settingsPanel"
-                );
-
-
-            panel.classList.remove(
-                "open"
-            );
-        }
-
-
-        function showSettingsMenu() {
-
-            const pages =
-                document.querySelectorAll(
-                    ".settings-page"
-                );
-
-
-            pages.forEach(
-                function(page) {
-
-                    page.classList.remove(
-                        "active"
-                    );
-                }
-            );
-
-
-            document
-                .getElementById(
-                    "settingsMenu"
-                )
-                .classList.add(
-                    "active"
-                );
-
-
-            document
-                .getElementById(
-                    "settingsTitle"
-                )
-                .textContent =
-                "Settings";
-        }
-
-
-        function openSettingsPage(
-            pageName
-        ) {
-
-            const pages =
-                document.querySelectorAll(
-                    ".settings-page"
-                );
-
-
-            pages.forEach(
-                function(page) {
-
-                    page.classList.remove(
-                        "active"
-                    );
-                }
-            );
-
-
-            const page =
-                document.getElementById(
-                    "settings-" +
-                    pageName
-                );
-
-
-            if (page) {
-
-                page.classList.add(
-                    "active"
-                );
-            }
-
-
-            const titles = {
-
-                account:
-                    "Account",
-
-                content:
-                    "Content & Social",
-
-                privacy:
-                    "Data & Privacy",
-
-                devices:
-                    "Devices",
-
-                notifications:
-                    "Notifications",
-
-                general:
-                    "General",
-
-                about:
-                    "About"
-
-            };
-
-
-            document
-                .getElementById(
-                    "settingsTitle"
-                )
-                .textContent =
-                titles[pageName] ||
-                "Settings";
-        }
-
-
-        function settingsBack() {
-
-            const menu =
-                document.getElementById(
-                    "settingsMenu"
-                );
-
-
-            if (
-                menu.classList.contains(
-                    "active"
-                )
-            ) {
-
-                closeSettings();
-
-            }
-
-            else {
-
-                showSettingsMenu();
-            }
-        }
-
-
-        function logoutNova() {
-
-            window.location.href =
-                "/logout";
-        }
-
-
-        /* =========================
-           ABOUT NEVUXA AI
-        ========================= */
-
-        function openAbout() {
-
-            document
-                .getElementById(
-                    "aboutOverlay"
-                )
-                .classList.add(
-                    "open"
-                );
-        }
-
-
-        function closeAbout() {
-
-            document
-                .getElementById(
-                    "aboutOverlay"
-                )
-                .classList.remove(
-                    "open"
-                );
-        }
-
-
-        /* =========================
-           ENTER TO SEND
-        ========================= */
-
-        document
-            .getElementById(
-                "messageInput"
-            )
-            .addEventListener(
-                "keydown",
-                function(event) {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        event.preventDefault();
-
-                        sendMessage();
-                    }
-                }
-            );
-
-
-        /* =========================
-           CLOSE PLUS MENU
-           WHEN CLICKING ELSEWHERE
-        ========================= */
-
-        document.addEventListener(
-            "click",
-            function(event) {
-
-                const menu =
-                    document.getElementById(
-                        "plusMenu"
-                    );
-
-
-                const button =
-                    document.querySelector(
-                        ".attach-button"
-                    );
-
-
-                if (
-                    menu.style.display ===
-                        "flex" &&
-                    !menu.contains(event.target) &&
-                    !button.contains(event.target)
-                ) {
-
-                    menu.style.display =
-                        "none";
-                }
+        const response = await fetch(
+            "/run-python",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code: code
+                })
             }
         );
 
-    </script>
+        const data = await response.json();
+
+        if (data.output !== undefined) {
+
+            output.textContent =
+                data.output || "(No output)";
+
+        } else {
+
+            output.textContent =
+                data.error || "Unknown error.";
+
+        }
+
+    } catch (error) {
+
+        output.textContent =
+            "Could not connect to Nevuxa.";
+
+    }
+
+}
+
+/* ================= CALCULATOR ================= */
+
+let calculatorExpression = "";
+
+function openCalculator() {
+
+    document
+        .getElementById("calculatorPanel")
+        .classList.add("show");
+
+    document
+        .getElementById("plusMenu")
+        .classList.remove("show");
+
+}
+
+function closeCalculator() {
+
+    document
+        .getElementById("calculatorPanel")
+        .classList.remove("show");
+
+}
+
+function updateCalculatorDisplay() {
+
+    document.getElementById(
+        "calculatorDisplay"
+    ).value = calculatorExpression;
+
+}
+
+function calculatorInput(value) {
+
+    calculatorExpression += value;
+
+    updateCalculatorDisplay();
+
+}
+
+function calculatorClear() {
+
+    calculatorExpression = "";
+
+    updateCalculatorDisplay();
+
+}
+
+function calculatorBackspace() {
+
+    calculatorExpression =
+        calculatorExpression.slice(0, -1);
+
+    updateCalculatorDisplay();
+
+}
+
+function calculatorCalculate() {
+
+    if (!calculatorExpression) {
+        return;
+    }
+
+    try {
+
+        let expression =
+            calculatorExpression
+                .replace(/×/g, "*")
+                .replace(/÷/g, "/");
+
+        expression =
+            expression.replace(
+                /(\d+(?:\.\d+)?)%/g,
+                "($1/100)"
+            );
+
+        if (
+            !/^[0-9+\-*/%().\s]+$/.test(
+                expression
+            )
+        ) {
+            throw new Error();
+        }
+
+        const result = Function(
+            '"use strict"; return (' +
+            expression +
+            ')'
+        )();
+
+        if (
+            typeof result !== "number" ||
+            !Number.isFinite(result)
+        ) {
+            throw new Error();
+        }
+
+        calculatorExpression =
+            String(result);
+
+        updateCalculatorDisplay();
+
+    } catch (error) {
+
+        calculatorExpression = "";
+
+        document.getElementById(
+            "calculatorDisplay"
+        ).value = "Error";
+
+        setTimeout(
+            updateCalculatorDisplay,
+            800
+        );
+
+    }
+
+}
+
+/* ================= CALCULATOR KEYBOARD ================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        const panel =
+            document.getElementById(
+                "calculatorPanel"
+            );
+
+        if (!panel.classList.contains("show")) {
+            return;
+        }
+
+        const key = event.key;
+
+        if (/^[0-9]$/.test(key)) {
+
+            calculatorInput(key);
+
+            event.preventDefault();
+
+        } else if (
+            key === "+" ||
+            key === "-" ||
+            key === "*" ||
+            key === "/" ||
+            key === "%" ||
+            key === "." ||
+            key === "(" ||
+            key === ")"
+        ) {
+
+            calculatorInput(key);
+
+            event.preventDefault();
+
+        } else if (
+            key === "Enter" ||
+            key === "="
+        ) {
+
+            calculatorCalculate();
+
+            event.preventDefault();
+
+        } else if (key === "Backspace") {
+
+            calculatorBackspace();
+
+            event.preventDefault();
+
+        } else if (key === "Escape") {
+
+            calculatorClear();
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+/* ================= SETTINGS ================= */
+
+function openSettings() {
+
+    document
+        .getElementById("settingsPanel")
+        .classList.add("show");
+
+}
+
+function closeSettings() {
+
+    document
+        .getElementById("settingsPanel")
+        .classList.remove("show");
+
+}
+
+function showSettingsPage(
+    page,
+    clickedItem
+) {
+
+    document
+        .querySelectorAll(".settings-page")
+        .forEach(function(item) {
+
+            item.classList.remove("active");
+
+        });
+
+    document
+        .querySelectorAll(".settings-item")
+        .forEach(function(item) {
+
+            item.classList.remove("active");
+
+        });
+
+    document
+        .getElementById(page)
+        .classList.add("active");
+
+    clickedItem.classList.add("active");
+
+}
+
+/* ================= ABOUT ================= */
+
+function openAbout() {
+
+    document
+        .getElementById("aboutOverlay")
+        .classList.add("show");
+
+}
+
+function closeAbout() {
+
+    document
+        .getElementById("aboutOverlay")
+        .classList.remove("show");
+
+}
+
+/* ================= LOGOUT ================= */
+
+function logoutNova() {
+
+    window.location.href = "/logout";
+
+}
+
+/* ================= ENTER TO SEND ================= */
+
+document
+    .getElementById("messageInput")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+</script>
 
 </body>
-
 </html>
