@@ -1,0 +1,2948 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nova AI</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background: black;
+
+            color: white;
+
+            font-family:
+                Arial,
+                sans-serif;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+
+            top: 0;
+
+            width: 210px;
+
+            height: 100vh;
+
+            background: #111;
+
+            padding: 20px;
+
+            z-index: 20;
+        }
+
+
+        .sidebar h2 {
+
+            margin-top: 0;
+
+            margin-bottom: 25px;
+        }
+
+
+        .sidebar button {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin-bottom: 10px;
+
+            background: #222;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            text-align: left;
+        }
+
+
+        .sidebar button:hover {
+
+            background: #333;
+        }
+
+
+        /* =========================
+           PYTHON ARROW
+        ========================= */
+
+        .python-toggle {
+
+            position: fixed;
+
+            left: 210px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            width: 35px;
+
+            height: 55px;
+
+            background: transparent;
+
+            color: #aaa;
+
+            border: none;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+            z-index: 30;
+        }
+
+
+        .python-toggle:hover {
+
+            color: white;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+
+            margin-left: 210px;
+
+            min-height: 100vh;
+
+            padding: 30px;
+
+            padding-bottom: 110px;
+        }
+
+
+        #chat {
+
+            max-width: 900px;
+
+            margin: 30px auto;
+        }
+
+
+        .message {
+
+            display: flex;
+
+            margin: 15px 0;
+        }
+
+
+        .message.user {
+
+            justify-content: flex-end;
+        }
+
+
+        .message.nova {
+
+            justify-content: flex-start;
+        }
+
+
+        .bubble {
+
+            max-width: 70%;
+
+            padding: 12px 16px;
+
+            border-radius: 14px;
+
+            line-height: 1.5;
+
+            white-space: pre-wrap;
+        }
+
+
+        .user .bubble {
+
+            background: #333;
+        }
+
+
+        .nova .bubble {
+
+            background: #181818;
+
+            border: 1px solid #333;
+        }
+
+
+        /* =========================
+           CHAT BOX
+        ========================= */
+
+        .chat-box {
+
+            position: fixed;
+
+            bottom: 20px;
+
+            left: 240px;
+
+            right: 30px;
+
+            display: flex;
+
+            gap: 10px;
+
+            background: black;
+
+            z-index: 10;
+        }
+
+
+        .attach-button {
+
+            width: 52px;
+
+            padding: 8px;
+
+            background: #222;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 8px;
+
+            font-size: 28px;
+
+            cursor: pointer;
+        }
+
+
+        .attach-button:hover {
+
+            background: #333;
+        }
+
+
+        .chat-box input[type="text"] {
+
+            flex: 1;
+
+            padding: 15px;
+
+            background: #222;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            outline: none;
+        }
+
+
+        .chat-box button.send {
+
+            padding: 15px 25px;
+
+            background: #333;
+
+            color: white;
+
+            border: 1px solid #555;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+        }
+
+
+        .chat-box button.send:hover {
+
+            background: #444;
+        }
+
+
+        /* =========================
+           PLUS MENU
+        ========================= */
+
+        .plus-menu {
+
+            position: fixed;
+
+            bottom: 75px;
+
+            left: 240px;
+
+            display: none;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+            padding: 8px;
+
+            background: #181818;
+
+            border: 1px solid #444;
+
+            border-radius: 12px;
+
+            width: 210px;
+
+            z-index: 1000;
+        }
+
+
+        .plus-menu button {
+
+            padding: 10px;
+
+            background: #222;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 8px;
+
+            text-align: left;
+
+            cursor: pointer;
+        }
+
+
+        .plus-menu button:hover {
+
+            background: #333;
+        }
+
+
+        #fileInput {
+
+            display: none;
+        }
+
+
+        #fileName {
+
+            position: fixed;
+
+            bottom: 75px;
+
+            left: 240px;
+
+            color: #aaa;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           PYTHON PANEL
+        ========================= */
+
+        .python-panel {
+
+            position: fixed;
+
+            top: 0;
+
+            right: -520px;
+
+            width: 520px;
+
+            height: 100vh;
+
+            background: #101010;
+
+            border-left: 1px solid #333;
+
+            z-index: 25;
+
+            transition:
+                right 0.25s;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .python-panel.open {
+
+            right: 0;
+        }
+
+
+        .python-header {
+
+            height: 60px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 18px;
+
+            border-bottom:
+                1px solid #333;
+        }
+
+
+        .python-header h2 {
+
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+
+        .close-python {
+
+            background: transparent;
+
+            border: none;
+
+            color: #aaa;
+
+            font-size: 22px;
+
+            cursor: pointer;
+        }
+
+
+        .close-python:hover {
+
+            color: white;
+        }
+
+
+        .code-area {
+
+            flex: 1;
+
+            padding: 15px;
+
+            display: flex;
+        }
+
+
+        #pythonCode {
+
+            width: 100%;
+
+            height: 100%;
+
+            resize: none;
+
+            background: #080808;
+
+            color: #eee;
+
+            border: 1px solid #333;
+
+            border-radius: 8px;
+
+            padding: 15px;
+
+            font-family:
+                Consolas,
+                monospace;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            outline: none;
+        }
+
+
+        .python-controls {
+
+            padding: 12px 15px;
+
+            border-top:
+                1px solid #333;
+        }
+
+
+        #runPython {
+
+            width: 100%;
+
+            padding: 12px;
+
+            background: #252525;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+
+        #runPython:hover {
+
+            background: #333;
+        }
+
+
+        .output-title {
+
+            padding:
+                10px 15px 0;
+
+            color: #aaa;
+
+            font-size: 13px;
+        }
+
+
+        #pythonOutput {
+
+            margin:
+                8px 15px 15px;
+
+            min-height: 100px;
+
+            max-height: 180px;
+
+            overflow: auto;
+
+            background: #080808;
+
+            border: 1px solid #333;
+
+            border-radius: 8px;
+
+            padding: 12px;
+
+            white-space: pre-wrap;
+
+            font-family:
+                Consolas,
+                monospace;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           SETTINGS PANEL
+        ========================= */
+
+        .settings-panel {
+
+            position: fixed;
+
+            top: 0;
+
+            right: -460px;
+
+            width: 460px;
+
+            height: 100vh;
+
+            background: #101010;
+
+            border-left:
+                1px solid #333;
+
+            z-index: 2000;
+
+            transition:
+                right 0.25s;
+
+            overflow-y: auto;
+        }
+
+
+        .settings-panel.open {
+
+            right: 0;
+        }
+
+
+        .settings-header {
+
+            position: sticky;
+
+            top: 0;
+
+            height: 65px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                0 20px;
+
+            background: #101010;
+
+            border-bottom:
+                1px solid #333;
+
+            z-index: 5;
+        }
+
+
+        .settings-header h2 {
+
+            margin: 0;
+
+            font-size: 20px;
+        }
+
+
+        .settings-back {
+
+            width: 38px;
+
+            height: 38px;
+
+            background: #222;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 20px;
+        }
+
+
+        .settings-back:hover {
+
+            background: #333;
+        }
+
+
+        .settings-content {
+
+            padding: 20px;
+        }
+
+
+        /* =========================
+           SETTINGS CATEGORIES
+        ========================= */
+
+        .settings-category {
+
+            width: 100%;
+
+            padding: 16px;
+
+            margin-bottom: 9px;
+
+            background: #181818;
+
+            color: white;
+
+            border:
+                1px solid #333;
+
+            border-radius: 10px;
+
+            text-align: left;
+
+            cursor: pointer;
+        }
+
+
+        .settings-category:hover {
+
+            background: #242424;
+        }
+
+
+        .settings-category-title {
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+
+        .settings-category-description {
+
+            color: #888;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+        }
+
+
+        /* =========================
+           SETTINGS PAGES
+        ========================= */
+
+        .settings-page {
+
+            display: none;
+        }
+
+
+        .settings-page.active {
+
+            display: block;
+        }
+
+
+        .settings-page h3 {
+
+            margin:
+                5px 0 8px;
+
+            font-size: 20px;
+        }
+
+
+        .settings-description {
+
+            color: #999;
+
+            line-height: 1.5;
+
+            margin-bottom: 20px;
+        }
+
+
+        .settings-option {
+
+            padding: 16px 0;
+
+            border-bottom:
+                1px solid #292929;
+        }
+
+
+        .settings-option:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .settings-option-title {
+
+            font-size: 15px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .settings-option-description {
+
+            color: #888;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        .settings-value {
+
+            margin-top: 8px;
+
+            display: inline-block;
+
+            padding:
+                5px 9px;
+
+            background: #222;
+
+            border:
+                1px solid #444;
+
+            border-radius: 6px;
+
+            color: #ccc;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           SETTINGS SWITCH
+        ========================= */
+
+        .setting-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .setting-switch {
+
+            width: 45px;
+
+            height: 24px;
+
+            position: relative;
+
+            appearance: none;
+
+            background: #333;
+
+            border-radius: 20px;
+
+            cursor: pointer;
+
+            border:
+                1px solid #555;
+        }
+
+
+        .setting-switch::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 18px;
+
+            height: 18px;
+
+            top: 2px;
+
+            left: 2px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            transition:
+                left 0.2s;
+        }
+
+
+        .setting-switch:checked {
+
+            background: #666;
+        }
+
+
+        .setting-switch:checked::after {
+
+            left: 23px;
+        }
+
+
+        /* =========================
+           LOGOUT
+        ========================= */
+
+        .logout-button {
+
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 20px;
+
+            background: #252525;
+
+            color: white;
+
+            border:
+                1px solid #555;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+
+        .logout-button:hover {
+
+            background: #3a3a3a;
+        }
+
+
+        /* =========================
+           ABOUT POPUP
+        ========================= */
+
+        .about-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0, 0, 0, 0.75);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 3000;
+        }
+
+
+        .about-overlay.open {
+
+            display: flex;
+        }
+
+
+        .about-box {
+
+            width: 400px;
+
+            max-width: 90%;
+
+            background: #181818;
+
+            border:
+                1px solid #444;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            text-align: center;
+        }
+
+
+        .about-box h2 {
+
+            margin-top: 0;
+        }
+
+
+        .about-box p {
+
+            color: #999;
+
+            line-height: 1.5;
+        }
+
+
+        .about-close {
+
+            margin-top: 15px;
+
+            padding:
+                10px 20px;
+
+            background: #292929;
+
+            color: white;
+
+            border:
+                1px solid #444;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+
+                width: 170px;
+
+                padding: 15px;
+            }
+
+
+            .main {
+
+                margin-left: 170px;
+
+                padding: 20px;
+            }
+
+
+            .python-toggle {
+
+                left: 170px;
+            }
+
+
+            .chat-box {
+
+                left: 190px;
+
+                right: 15px;
+            }
+
+
+            .plus-menu {
+
+                left: 190px;
+            }
+
+
+            #fileName {
+
+                left: 190px;
+            }
+
+
+            .settings-panel {
+
+                width: 100%;
+
+                right: -100%;
+            }
+
+
+            .python-panel {
+
+                width: 100%;
+
+                right: -100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <div class="sidebar">
+
+        <h2>Nova AI</h2>
+
+
+        <button
+            onclick="newChat()"
+        >
+            ✨ New Chat
+        </button>
+
+
+        <button
+            onclick="openChats()"
+        >
+            💬 Chats
+        </button>
+
+
+        <button
+            onclick="openSettings()"
+        >
+            ⚙️ Settings
+        </button>
+
+
+        <button
+            onclick="openAbout()"
+        >
+            ℹ️ About Nova
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         PYTHON ARROW
+    ========================= -->
+
+    <button
+        class="python-toggle"
+        onclick="togglePython()"
+        title="Python"
+    >
+        ←
+    </button>
+
+
+    <!-- =========================
+         MAIN NOVA
+    ========================= -->
+
+    <div class="main">
+
+        <h1>Nova AI</h1>
+
+        <p>Your AI assistant.</p>
+
+        <div id="chat"></div>
+
+    </div>
+
+
+    <!-- =========================
+         FILE NAME
+    ========================= -->
+
+    <div id="fileName"></div>
+
+
+    <!-- =========================
+         PLUS MENU
+    ========================= -->
+
+    <div
+        id="plusMenu"
+        class="plus-menu"
+    >
+
+        <button
+            onclick="chooseImage()"
+        >
+            📷 Add image
+        </button>
+
+
+        <button
+            onclick="chooseFile()"
+        >
+            📄 Add file
+        </button>
+
+
+        <button
+            onclick="openMaps()"
+        >
+            🗺️ Maps
+        </button>
+
+
+        <button
+            onclick="startVoice()"
+        >
+            🎤 Voice
+        </button>
+
+
+        <button
+            onclick="notReady('Create image')"
+        >
+            🎨 Create image
+        </button>
+
+
+        <button
+            onclick="notReady('Web search')"
+        >
+            🔎 Web search
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         FILE INPUT
+    ========================= -->
+
+    <input
+        type="file"
+        id="fileInput"
+        accept="image/*,.txt,.csv,.json"
+        onchange="showFileName()"
+    >
+
+
+    <!-- =========================
+         CHAT BOX
+    ========================= -->
+
+    <div class="chat-box">
+
+        <button
+            class="attach-button"
+            onclick="togglePlusMenu()"
+        >
+            +
+        </button>
+
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Message Nova AI..."
+        >
+
+
+        <button
+            class="send"
+            onclick="sendMessage()"
+        >
+            Send
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         PYTHON PANEL
+    ========================= -->
+
+    <div
+        id="pythonPanel"
+        class="python-panel"
+    >
+
+        <div class="python-header">
+
+            <h2>🐍 Python</h2>
+
+
+            <button
+                class="close-python"
+                onclick="togglePython()"
+            >
+                →
+            </button>
+
+        </div>
+
+
+        <div class="code-area">
+
+            <textarea
+                id="pythonCode"
+                spellcheck="false"
+                placeholder="Write Python here..."
+            >print("Hello from Nova!")</textarea>
+
+        </div>
+
+
+        <div class="python-controls">
+
+            <button
+                id="runPython"
+                onclick="runPython()"
+            >
+                ▶ Run Python
+            </button>
+
+        </div>
+
+
+        <div class="output-title">
+            Output
+        </div>
+
+
+        <pre
+            id="pythonOutput"
+        >Run your Python code to see the output.</pre>
+
+    </div>
+
+
+    <!-- =========================
+         SETTINGS PANEL
+    ========================= -->
+
+    <div
+        id="settingsPanel"
+        class="settings-panel"
+    >
+
+
+        <!-- SETTINGS HEADER -->
+
+        <div class="settings-header">
+
+            <button
+                class="settings-back"
+                onclick="settingsBack()"
+            >
+                ←
+            </button>
+
+
+            <h2
+                id="settingsTitle"
+            >
+                Settings
+            </h2>
+
+        </div>
+
+
+        <div class="settings-content">
+
+
+            <!-- =====================
+                 SETTINGS HOME
+            ====================== -->
+
+            <div
+                id="settingsMenu"
+                class="settings-page active"
+            >
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('account')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        👤 Account
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Email, password and sign-in
+                        options
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('content')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        🎨 Content & Social
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Content, sharing and social
+                        features
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('privacy')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        🔒 Data & Privacy
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Chat history and data controls
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('devices')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        💻 Devices
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Devices currently signed in
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('notifications')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        🔔 Notifications
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Notification preferences
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('general')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        ⚙️ General
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Language and general preferences
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="settings-category"
+                    onclick="
+                        openSettingsPage('about')
+                    "
+                >
+
+                    <div
+                        class="settings-category-title"
+                    >
+                        ℹ️ About
+                    </div>
+
+                    <div
+                        class="settings-category-description"
+                    >
+                        Nova version and information
+                    </div>
+
+                </button>
+
+
+                <button
+                    class="logout-button"
+                    onclick="logoutNova()"
+                >
+                    🚪 Log out
+                </button>
+
+            </div>
+
+
+            <!-- =====================
+                 ACCOUNT
+            ====================== -->
+
+            <div
+                id="settings-account"
+                class="settings-page"
+            >
+
+                <h3>👤 Account</h3>
+
+
+                <p class="settings-description">
+                    Manage your Nova account and
+                    sign-in settings.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Email
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Your Nova account email
+                        address.
+                    </div>
+
+
+                    <span class="settings-value">
+                        Your account email
+                    </span>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Password
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Your password is securely
+                        stored by Nova.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Sign-in options
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Additional sign-in methods
+                        can be added later.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Account security
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Security controls for your
+                        Nova account.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 CONTENT & SOCIAL
+            ====================== -->
+
+            <div
+                id="settings-content"
+                class="settings-page"
+            >
+
+                <h3>🎨 Content & Social</h3>
+
+
+                <p class="settings-description">
+                    Control content and social
+                    features in Nova.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <div
+                                class="settings-option-title"
+                            >
+                                Content preferences
+                            </div>
+
+
+                            <div
+                                class="settings-option-description"
+                            >
+                                Customize the type of
+                                content Nova shows you.
+                            </div>
+
+                        </div>
+
+
+                        <input
+                            type="checkbox"
+                            class="setting-switch"
+                            checked
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Sharing
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Sharing controls will be
+                        available here.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Social features
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Social features can be
+                        connected to Nova later.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 DATA & PRIVACY
+            ====================== -->
+
+            <div
+                id="settings-privacy"
+                class="settings-page"
+            >
+
+                <h3>🔒 Data & Privacy</h3>
+
+
+                <p class="settings-description">
+                    Control your conversations and
+                    Nova data.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <div
+                                class="settings-option-title"
+                            >
+                                Chat history
+                            </div>
+
+
+                            <div
+                                class="settings-option-description"
+                            >
+                                Controls for saving
+                                conversations.
+                            </div>
+
+                        </div>
+
+
+                        <input
+                            type="checkbox"
+                            class="setting-switch"
+                            checked
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Data controls
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Manage how Nova handles
+                        your data.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Privacy
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Privacy controls will be
+                        expanded as Nova develops.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Delete account
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Account deletion controls
+                        will be added later.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 DEVICES
+            ====================== -->
+
+            <div
+                id="settings-devices"
+                class="settings-page"
+            >
+
+                <h3>💻 Devices</h3>
+
+
+                <p class="settings-description">
+                    View devices currently signed
+                    in to Nova.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        This device
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Current Nova browser session.
+                    </div>
+
+
+                    <span class="settings-value">
+                        Current session
+                    </span>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Other devices
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Other signed-in devices will
+                        appear here when device
+                        management is connected.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 NOTIFICATIONS
+            ====================== -->
+
+            <div
+                id="settings-notifications"
+                class="settings-page"
+            >
+
+                <h3>🔔 Notifications</h3>
+
+
+                <p class="settings-description">
+                    Control Nova notifications.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <div
+                                class="settings-option-title"
+                            >
+                                Notifications
+                            </div>
+
+
+                            <div
+                                class="settings-option-description"
+                            >
+                                Enable or disable Nova
+                                notifications.
+                            </div>
+
+                        </div>
+
+
+                        <input
+                            type="checkbox"
+                            class="setting-switch"
+                            checked
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Notification preferences
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        More detailed notification
+                        controls can be added later.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 GENERAL
+            ====================== -->
+
+            <div
+                id="settings-general"
+                class="settings-page"
+            >
+
+                <h3>⚙️ General</h3>
+
+
+                <p class="settings-description">
+                    General Nova preferences.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Language
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        The language Nova currently
+                        uses.
+                    </div>
+
+
+                    <span class="settings-value">
+                        English (US)
+                    </span>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Appearance
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Choose how Nova looks.
+                    </div>
+
+
+                    <span class="settings-value">
+                        Dark
+                    </span>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        General preferences
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Additional Nova preferences
+                        can be added here.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 ABOUT
+            ====================== -->
+
+            <div
+                id="settings-about"
+                class="settings-page"
+            >
+
+                <h3>ℹ️ About Nova</h3>
+
+
+                <p class="settings-description">
+                    Information about your Nova AI
+                    assistant.
+                </p>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Version
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Current Nova version.
+                    </div>
+
+
+                    <span class="settings-value">
+                        Nova AI 1.0
+                    </span>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        About Nova
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Nova is your personal AI
+                        assistant built with Flask
+                        and an AI inference API.
+                    </div>
+
+                </div>
+
+
+                <div class="settings-option">
+
+                    <div
+                        class="settings-option-title"
+                    >
+                        Credits
+                    </div>
+
+
+                    <div
+                        class="settings-option-description"
+                    >
+                        Nova AI project.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ABOUT POPUP
+    ========================= -->
+
+    <div
+        id="aboutOverlay"
+        class="about-overlay"
+    >
+
+        <div class="about-box">
+
+            <h2>
+                ✨ Nova AI
+            </h2>
+
+
+            <p>
+                Your personal AI assistant.
+            </p>
+
+
+            <p>
+                Nova can chat, work with files,
+                use Python and more.
+            </p>
+
+
+            <p>
+                Version 1.0
+            </p>
+
+
+            <button
+                class="about-close"
+                onclick="closeAbout()"
+            >
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+
+        /* =========================
+           PYTHON PANEL
+        ========================= */
+
+        function togglePython() {
+
+            const panel =
+                document.getElementById(
+                    "pythonPanel"
+                );
+
+
+            panel.classList.toggle(
+                "open"
+            );
+        }
+
+
+        async function runPython() {
+
+            const code =
+                document.getElementById(
+                    "pythonCode"
+                ).value;
+
+
+            const output =
+                document.getElementById(
+                    "pythonOutput"
+                );
+
+
+            if (!code.trim()) {
+
+                output.textContent =
+                    "Please enter some Python code.";
+
+                return;
+            }
+
+
+            output.textContent =
+                "Running...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/run-python",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                code: code
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                output.textContent =
+                    data.output ||
+                    data.error ||
+                    "No output.";
+
+            }
+
+            catch (error) {
+
+                output.textContent =
+                    "Could not run Python.";
+            }
+        }
+
+
+        /* =========================
+           PLUS MENU
+        ========================= */
+
+        function togglePlusMenu() {
+
+            const menu =
+                document.getElementById(
+                    "plusMenu"
+                );
+
+
+            menu.style.display =
+                menu.style.display === "flex"
+                    ? "none"
+                    : "flex";
+        }
+
+
+        /* =========================
+           FILES
+        ========================= */
+
+        function chooseImage() {
+
+            const input =
+                document.getElementById(
+                    "fileInput"
+                );
+
+
+            input.accept =
+                "image/*";
+
+
+            input.click();
+
+
+            togglePlusMenu();
+        }
+
+
+        function chooseFile() {
+
+            const input =
+                document.getElementById(
+                    "fileInput"
+                );
+
+
+            input.accept =
+                ".txt,.csv,.json";
+
+
+            input.click();
+
+
+            togglePlusMenu();
+        }
+
+
+        function showFileName() {
+
+            const input =
+                document.getElementById(
+                    "fileInput"
+                );
+
+
+            const name =
+                document.getElementById(
+                    "fileName"
+                );
+
+
+            if (
+                input.files.length > 0
+            ) {
+
+                name.textContent =
+                    "Attached: " +
+                    input.files[0].name;
+
+            }
+
+            else {
+
+                name.textContent = "";
+            }
+        }
+
+
+        /* =========================
+           MAPS
+        ========================= */
+
+        function openMaps() {
+
+            togglePlusMenu();
+
+
+            window.open(
+                "https://www.google.com/maps",
+                "_blank"
+            );
+
+
+            addMessage(
+                "🗺️ Google Maps opened. Choose a place, then copy its Maps link and send it to Nova.",
+                "nova"
+            );
+        }
+
+
+        /* =========================
+           VOICE
+        ========================= */
+
+        function startVoice() {
+
+            togglePlusMenu();
+
+
+            const SpeechRecognition =
+                window.SpeechRecognition ||
+                window.webkitSpeechRecognition;
+
+
+            if (!SpeechRecognition) {
+
+                addMessage(
+                    "Voice input isn't supported by this browser.",
+                    "nova"
+                );
+
+                return;
+            }
+
+
+            const recognition =
+                new SpeechRecognition();
+
+
+            recognition.lang =
+                "en-US";
+
+
+            recognition.continuous =
+                false;
+
+
+            recognition.interimResults =
+                false;
+
+
+            addMessage(
+                "🎤 I'm listening...",
+                "nova"
+            );
+
+
+            recognition.onresult =
+                function(event) {
+
+                    const text =
+                        event
+                            .results[0][0]
+                            .transcript;
+
+
+                    document
+                        .getElementById(
+                            "messageInput"
+                        )
+                        .value = text;
+
+
+                    sendMessage();
+                };
+
+
+            recognition.onerror =
+                function() {
+
+                    addMessage(
+                        "I couldn't hear that. Please try again.",
+                        "nova"
+                    );
+                };
+
+
+            recognition.start();
+        }
+
+
+        /* =========================
+           OTHER BUTTONS
+        ========================= */
+
+        function notReady(feature) {
+
+            addMessage(
+                feature +
+                " isn't connected yet.",
+                "nova"
+            );
+        }
+
+
+        /* =========================
+           CHAT
+        ========================= */
+
+        function addMessage(
+            text,
+            sender
+        ) {
+
+            const chat =
+                document.getElementById(
+                    "chat"
+                );
+
+
+            const message =
+                document.createElement(
+                    "div"
+                );
+
+
+            message.className =
+                "message " +
+                sender;
+
+
+            const bubble =
+                document.createElement(
+                    "div"
+                );
+
+
+            bubble.className =
+                "bubble";
+
+
+            bubble.textContent =
+                text;
+
+
+            message.appendChild(
+                bubble
+            );
+
+
+            chat.appendChild(
+                message
+            );
+
+
+            window.scrollTo(
+                0,
+                document.body.scrollHeight
+            );
+        }
+
+
+        async function sendMessage() {
+
+            const input =
+                document.getElementById(
+                    "messageInput"
+                );
+
+
+            const fileInput =
+                document.getElementById(
+                    "fileInput"
+                );
+
+
+            const message =
+                input.value.trim();
+
+
+            const file =
+                fileInput.files[0];
+
+
+            if (
+                message === "" &&
+                !file
+            ) {
+
+                return;
+            }
+
+
+            let displayMessage =
+                message;
+
+
+            if (file) {
+
+                displayMessage +=
+                    (message ? "\n" : "") +
+                    "📎 " +
+                    file.name;
+            }
+
+
+            addMessage(
+                displayMessage,
+                "user"
+            );
+
+
+            input.value = "";
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "message",
+                    message
+                );
+
+
+                if (file) {
+
+                    formData.append(
+                        "file",
+                        file
+                    );
+                }
+
+
+                const response =
+                    await fetch(
+                        "/chat",
+                        {
+                            method: "POST",
+
+                            body: formData
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.reply) {
+
+                    addMessage(
+                        data.reply,
+                        "nova"
+                    );
+
+                }
+
+                else {
+
+                    addMessage(
+                        "Nova didn't return a response.",
+                        "nova"
+                    );
+                }
+
+
+                fileInput.value = "";
+
+
+                document.getElementById(
+                    "fileName"
+                ).textContent = "";
+
+            }
+
+            catch (error) {
+
+                addMessage(
+                    "Sorry, Nova couldn't connect to the server.",
+                    "nova"
+                );
+            }
+        }
+
+
+        /* =========================
+           NEW CHAT
+        ========================= */
+
+        function newChat() {
+
+            const chat =
+                document.getElementById(
+                    "chat"
+                );
+
+
+            chat.innerHTML = "";
+
+
+            addMessage(
+                "✨ New chat started.",
+                "nova"
+            );
+        }
+
+
+        /* =========================
+           CHATS
+        ========================= */
+
+        function openChats() {
+
+            addMessage(
+                "💬 Chat history isn't connected yet. We'll build the chat history system next.",
+                "nova"
+            );
+        }
+
+
+        /* =========================
+           SETTINGS
+        ========================= */
+
+        function openSettings() {
+
+            const panel =
+                document.getElementById(
+                    "settingsPanel"
+                );
+
+
+            panel.classList.add(
+                "open"
+            );
+
+
+            showSettingsMenu();
+        }
+
+
+        function closeSettings() {
+
+            const panel =
+                document.getElementById(
+                    "settingsPanel"
+                );
+
+
+            panel.classList.remove(
+                "open"
+            );
+        }
+
+
+        function showSettingsMenu() {
+
+            const pages =
+                document.querySelectorAll(
+                    ".settings-page"
+                );
+
+
+            pages.forEach(
+                function(page) {
+
+                    page.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            document
+                .getElementById(
+                    "settingsMenu"
+                )
+                .classList.add(
+                    "active"
+                );
+
+
+            document
+                .getElementById(
+                    "settingsTitle"
+                )
+                .textContent =
+                "Settings";
+        }
+
+
+        function openSettingsPage(
+            pageName
+        ) {
+
+            const pages =
+                document.querySelectorAll(
+                    ".settings-page"
+                );
+
+
+            pages.forEach(
+                function(page) {
+
+                    page.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            const page =
+                document.getElementById(
+                    "settings-" +
+                    pageName
+                );
+
+
+            if (page) {
+
+                page.classList.add(
+                    "active"
+                );
+            }
+
+
+            const titles = {
+
+                account:
+                    "Account",
+
+                content:
+                    "Content & Social",
+
+                privacy:
+                    "Data & Privacy",
+
+                devices:
+                    "Devices",
+
+                notifications:
+                    "Notifications",
+
+                general:
+                    "General",
+
+                about:
+                    "About"
+
+            };
+
+
+            document
+                .getElementById(
+                    "settingsTitle"
+                )
+                .textContent =
+                titles[pageName] ||
+                "Settings";
+        }
+
+
+        function settingsBack() {
+
+            const menu =
+                document.getElementById(
+                    "settingsMenu"
+                );
+
+
+            if (
+                menu.classList.contains(
+                    "active"
+                )
+            ) {
+
+                closeSettings();
+
+            }
+
+            else {
+
+                showSettingsMenu();
+            }
+        }
+
+
+        function logoutNova() {
+
+            window.location.href =
+                "/logout";
+        }
+
+
+        /* =========================
+           ABOUT NOVA
+        ========================= */
+
+        function openAbout() {
+
+            document
+                .getElementById(
+                    "aboutOverlay"
+                )
+                .classList.add(
+                    "open"
+                );
+        }
+
+
+        function closeAbout() {
+
+            document
+                .getElementById(
+                    "aboutOverlay"
+                )
+                .classList.remove(
+                    "open"
+                );
+        }
+
+
+        /* =========================
+           ENTER TO SEND
+        ========================= */
+
+        document
+            .getElementById(
+                "messageInput"
+            )
+            .addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        sendMessage();
+                    }
+                }
+            );
+
+
+        /* =========================
+           CLOSE PLUS MENU
+           WHEN CLICKING ELSEWHERE
+        ========================= */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                const menu =
+                    document.getElementById(
+                        "plusMenu"
+                    );
+
+
+                const button =
+                    document.querySelector(
+                        ".attach-button"
+                    );
+
+
+                if (
+                    menu.style.display ===
+                        "flex" &&
+                    !menu.contains(event.target) &&
+                    !button.contains(event.target)
+                ) {
+
+                    menu.style.display =
+                        "none";
+                }
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
