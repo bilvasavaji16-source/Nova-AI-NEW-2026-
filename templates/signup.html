@@ -1,9 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Sign Up - Nevuxa AI</title>
 
     <style>
@@ -17,22 +17,20 @@
             background: #000;
             color: white;
             font-family: Arial, sans-serif;
-
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .signup-box {
-            width: 360px;
+            width: 100%;
+            max-width: 360px;
             padding: 35px;
-
             background: #111;
             border: 1px solid #333;
             border-radius: 18px;
-
-            box-shadow:
-                0 0 30px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
         }
 
         h1 {
@@ -52,38 +50,52 @@
             color: #ddd;
         }
 
+        .password-container {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
         input {
             width: 100%;
             padding: 13px;
-            margin-bottom: 18px;
-
             border-radius: 10px;
             border: 1px solid #444;
-
             background: #050505;
             color: white;
-
             font-size: 15px;
             outline: none;
+        }
+
+        .password-container input {
+            padding-right: 75px;
+            margin-bottom: 0;
         }
 
         input:focus {
             border-color: #777;
         }
 
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            color: #ccc;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
         .signup-button {
             width: 100%;
             padding: 13px;
-
             border: none;
             border-radius: 10px;
-
             background: white;
             color: black;
-
             font-size: 16px;
             font-weight: bold;
-
             cursor: pointer;
         }
 
@@ -109,81 +121,112 @@
         .error {
             background: #351111;
             border: 1px solid #772222;
-
             color: #ffaaaa;
-
             padding: 10px;
             border-radius: 8px;
-
             margin-bottom: 18px;
-
             text-align: center;
         }
     </style>
 </head>
 
 <body>
-
 <div class="signup-box">
-
     <h1>Nevuxa AI</h1>
 
-    <div class="subtitle">
-        Create your account
-    </div>
+    <div class="subtitle">Create your account</div>
 
     {% if error %}
-        <div class="error">
-            {{ error }}
-        </div>
+        <div class="error" role="alert">{{ error }}</div>
     {% endif %}
 
-    <form method="POST">
-
-        <label for="email">
-            Email
-        </label>
-
+    <form method="POST" id="signup-form">
+        <label for="email">Email</label>
         <input
             type="email"
             id="email"
             name="email"
             placeholder="Enter your email"
+            autocomplete="email"
             required
         >
 
-        <label for="password">
-            Password
-        </label>
+        <label for="password">Password</label>
+        <div class="password-container">
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            >
+            <button
+                type="button"
+                class="toggle-password"
+                data-target="password"
+                aria-label="Show password"
+                aria-pressed="false"
+            >Show</button>
+        </div>
 
-        <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Create a password"
-            required
-        >
+        <label for="confirm_password">Confirm Password</label>
+        <div class="password-container">
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                placeholder="Enter your password again"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            >
+            <button
+                type="button"
+                class="toggle-password"
+                data-target="confirm_password"
+                aria-label="Show confirm password"
+                aria-pressed="false"
+            >Show</button>
+        </div>
 
-        <button
-            type="submit"
-            class="signup-button"
-        >
+        <button type="submit" class="signup-button">
             Sign Up
         </button>
-
     </form>
 
     <div class="login-text">
-
         Already have an account?
-
-        <a href="/login">
-            Log in
-        </a>
-
+        <a href="{{ url_for('login') }}">Log in</a>
     </div>
-
 </div>
 
+<script>
+    document.querySelectorAll(".toggle-password").forEach(button => {
+        button.addEventListener("click", () => {
+            const input = document.getElementById(button.dataset.target);
+            const showPassword = input.type === "password";
+
+            input.type = showPassword ? "text" : "password";
+            button.textContent = showPassword ? "Hide" : "Show";
+            button.setAttribute("aria-pressed", String(showPassword));
+            button.setAttribute(
+                "aria-label",
+                showPassword ? "Hide password" : "Show password"
+            );
+        });
+    });
+
+    document.getElementById("signup-form").addEventListener("submit", event => {
+        const password = document.getElementById("password").value;
+        const confirmation = document.getElementById("confirm_password").value;
+
+        if (password !== confirmation) {
+            event.preventDefault();
+            alert("Your passwords do not match. Please try again.");
+        }
+    });
+</script>
 </body>
 </html>
