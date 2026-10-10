@@ -320,6 +320,23 @@ def signup():
 
     return render_template("signup.html")
 
+# ============================================================
+# TERMS & CONDITIONS
+# ============================================================
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
+# ============================================================
+# PRIVACY POLICY
+# ============================================================
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
 
 # ============================================================
 # LOG OUT
@@ -336,7 +353,7 @@ def logout():
 # ============================================================
 
 @app.route("/account")
-def account():
+def account():https://www.youtube.com/watch?v=X8TtiJ7HbWE
     if "user_id" not in session:
         return redirect(url_for("login"))
 
