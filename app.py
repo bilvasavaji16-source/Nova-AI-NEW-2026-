@@ -6,6 +6,9 @@ import base64
 import sqlite3
 import contextlib
 import re
+import json
+import urllib.request
+import urllib.error
 
 from flask import (
     Flask,
@@ -455,6 +458,108 @@ def chat():
                 "couldn't process that request."
             )
         }), 500
+
+
+
+# ================= WEB SEARCH =================
+
+@app.route("/web-search", methods=["POST"])
+def nevuxa_web_search():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+
+    data = request.get_json(silent=True) or {}
+    query = data.get("query", "")
+    if not isinstance(query, str) or not query.strip():
+        return jsonify({"error": "Enter something to search for."}), 400
+    query = query.strip()[:300]
+
+    api_key = os.environ.get("TAVILY_API_KEY")
+    if not api_key:
+        return jsonify({
+            "error": "Web search is not configured yet. Add TAVILY_API_KEY in your Render environment variables."
+        }), 503
+
+    payload = json.dumps({
+        "api_key": api_key,
+        "query": query,
+        "search_depth": "basic",
+        "max_results": 6,
+        "include_answer": True
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        "https://api.tavily.com/search",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=20) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        items = []
+        for item in result.get("results", [])[:6]:
+            url = item.get("url", "")
+            title = item.get("title", "Untitled result")
+            snippet = item.get("content", "")
+            if url.startswith(("https://", "http://")):
+                items.append({
+                    "title": str(title)[:250],
+                    "url": url,
+                    "snippet": str(snippet)[:700]
+                })
+        return jsonify({
+            "query": query,
+            "answer": str(result.get("answer") or "")[:1500],
+            "results": items
+        })
+    except urllib.error.HTTPError as exc:
+        print("WEB SEARCH HTTP ERROR:", exc.code)
+        return jsonify({"error": "The search provider rejected the request. Check the Tavily API key and account."}), 502
+    except Exception as exc:
+        print("WEB SEARCH ERROR:", exc)
+        return jsonify({"error": "Web search could not connect. Please try again."}), 502
+
+
+# ================= IMAGE GENERATION =================
+
+@app.route("/generate-image", methods=["POST"])
+def generate_image():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+
+    data = request.get_json(silent=True) or {}
+    prompt = data.get("prompt", "")
+    if not isinstance(prompt, str) or not prompt.strip():
+        return jsonify({"error": "Enter a description for the image."}), 400
+    if len(prompt) > 1500:
+        return jsonify({"error": "Please keep the image prompt under 1,500 characters."}), 400
+
+    model = os.environ.get("SPRAG_IMAGE_MODEL")
+    if not model:
+        return jsonify({
+            "error": "Image generation is not configured. Your Sprag API account must support image generation. Add its supported model name as SPRAG_IMAGE_MODEL in Render after confirming it with Sprag."
+        }), 503
+
+    try:
+        response = client.images.generate(
+            model=model,
+            prompt=prompt.strip(),
+            size="1024x1024"
+        )
+        image = response.data[0]
+        image_url = getattr(image, "url", None)
+        image_b64 = getattr(image, "b64_json", None)
+        if image_url:
+            return jsonify({"url": image_url, "prompt": prompt.strip()})
+        if image_b64:
+            return jsonify({"data_url": "data:image/png;base64," + image_b64, "prompt": prompt.strip()})
+        return jsonify({"error": "The image service returned no usable image."}), 502
+    except Exception as exc:
+        print("SPRAG IMAGE ERROR:", exc)
+        return jsonify({
+            "error": "Sprag image generation failed. Confirm that your API account supports image generation and that SPRAG_IMAGE_MODEL is correct."
+        }), 502
 
 
 @app.route("/run-python", methods=["POST"])
