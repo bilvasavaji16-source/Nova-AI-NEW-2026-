@@ -571,6 +571,63 @@ def run_python():
         }), 400
 
 
+# Nevuxa additional pages
+
+@app.route("/settings")
+def settings():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("settings.html")
+
+
+@app.route("/images")
+def images():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("images.html")
+
+
+@app.route("/library")
+def library():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("library.html")
+
+
+@app.route("/scheduled")
+def scheduled():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("scheduled.html")
+
+
+@app.route("/plugins")
+def plugins():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("plugins.html")
+
+
+@app.route("/projects")
+def projects():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("projects.html")
+
+
+@app.route("/codex")
+def codex():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("codex.html")
+
+
+@app.route("/plans")
+def plans():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    return render_template("plans.html")
+
 if __name__ == "__main__":
 
     app.run(
