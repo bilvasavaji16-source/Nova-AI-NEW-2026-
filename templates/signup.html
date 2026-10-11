@@ -1,11 +1,11 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#09090b">
-    <title>Create Account | Nevuxa AI</title>
+    <title>Create Account - Nevuxa AI</title>
 
     <style>
         * {
@@ -15,361 +15,270 @@
         body {
             margin: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 16px;
+            background: #000;
+            color: white;
             font-family: Arial, sans-serif;
-            color: #f5f5f5;
-            background:
-                radial-gradient(ellipse at top, #252538 0%, #101014 45%, #080809 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .signup-card {
+        .box {
             width: 100%;
-            max-width: 410px;
-            padding: 34px 28px;
-            border: 1px solid #303039;
-            border-radius: 20px;
-            background: rgba(20, 20, 25, 0.96);
-            box-shadow: 0 20px 65px rgba(0, 0, 0, 0.45);
+            max-width: 350px;
+            background: #151515;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
         }
 
-        .brand {
-            margin: 0;
+        h1 {
             text-align: center;
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -1px;
+            margin-top: 0;
         }
 
-        .brand span {
-            color: #a78bfa;
-        }
-
-        .subtitle {
-            margin: 10px 0 28px;
-            color: #a1a1aa;
+        p {
             text-align: center;
-            font-size: 14px;
-        }
-
-        .field {
-            margin-bottom: 19px;
+            color: #aaa;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #e4e4e7;
-            font-size: 13px;
-            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 7px;
+            color: #ddd;
         }
 
-        input[type="email"],
-        input[type="password"],
-        input[type="text"] {
+        input {
             width: 100%;
-            min-width: 0;
-            padding: 13px 14px;
-            border: 1px solid #3f3f46;
-            border-radius: 10px;
-            outline: none;
-            background: #111114;
-            color: #fff;
-            font-size: 14px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            padding: 13px;
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 15px;
         }
 
         input:focus {
-            border-color: #a78bfa;
-            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.13);
+            outline: none;
+            border-color: #888;
         }
 
-        input::placeholder {
-            color: #71717a;
+        .password-container {
+            display: flex;
+            gap: 8px;
         }
 
-        .password-wrap {
-            position: relative;
+        .password-container input {
+            flex: 1;
+            min-width: 0;
         }
 
-        .password-wrap input {
-            padding-right: 72px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            padding: 6px;
-            border: none;
-            background: transparent;
-            color: #c4b5fd;
+        .eye-button {
+            width: 46px;
+            flex-shrink: 0;
+            padding: 8px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
         }
 
-        .hint {
-            margin: 7px 0 0;
-            color: #a1a1aa;
-            font-size: 11px;
+        .terms-checkbox {
+            margin-top: 18px;
+        }
+
+        .terms-checkbox label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
             line-height: 1.5;
         }
 
-        .terms {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin: 22px 0;
-            color: #c4c4cc;
-            font-size: 12px;
-            font-weight: normal;
-            line-height: 1.6;
-        }
-
-        .terms input {
+        .terms-checkbox input {
+            width: auto;
             flex-shrink: 0;
-            margin-top: 3px;
-            accent-color: #a78bfa;
+            margin-top: 4px;
         }
 
-        .terms a,
-        .login-link a {
-            color: #c4b5fd;
+        .create-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 13px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .create-button:hover {
+            background: #ddd;
+        }
+
+        .error {
+            color: #ff9999;
+            background: #351111;
+            border: 1px solid #772222;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .link {
+            margin-top: 20px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        a {
+            color: white;
             text-decoration: none;
         }
 
-        .terms a:hover,
-        .login-link a:hover {
+        a:hover {
             text-decoration: underline;
-        }
-
-        .signup-button {
-            width: 100%;
-            min-height: 46px;
-            padding: 13px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(100deg, #8b5cf6, #a78bfa);
-            color: #fff;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .signup-button:hover:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        .signup-button:disabled {
-            opacity: 0.65;
-            cursor: wait;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            margin-right: 8px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            margin-bottom: 18px;
-            padding: 11px 12px;
-            border: 1px solid #7f1d1d;
-            border-radius: 9px;
-            background: #2a1215;
-            color: #fca5a5;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .login-link {
-            margin: 22px 0 0;
-            color: #a1a1aa;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        @media (max-width: 380px) {
-            .signup-card {
-                padding: 27px 19px;
-            }
-
-            .brand {
-                font-size: 28px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
         }
     </style>
 </head>
 
 <body>
-    <main class="signup-card">
-        <h1 class="brand">Nevuxa <span>AI</span></h1>
-        <p class="subtitle">Create your account and get started.</p>
+    <div class="box">
+
+        <h1>Create Nevuxa Account</h1>
+        <p>Make your Nevuxa AI account.</p>
 
         {% if error %}
-            <div class="error-message" role="alert">
-                {{ error }}
-            </div>
+            <div class="error">{{ error }}</div>
         {% endif %}
 
-        <form id="signupForm" method="POST"
-              action="{{ url_for('signup') }}">
+        <form method="POST" id="signupForm">
 
-            <div class="field">
-                <label for="email">Email address</label>
+            <label for="email">Email address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+            >
+
+            <label for="password">Password</label>
+            <div class="password-container">
                 <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    autocomplete="email"
-                    maxlength="254"
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
                     required
                 >
+                <button
+                    type="button"
+                    class="eye-button"
+                    onclick="togglePassword('password', this)"
+                    aria-label="Show or hide password"
+                    title="Show or hide password"
+                >👁</button>
             </div>
 
-            <div class="field">
-                <label for="password">Password</label>
-
-                <div class="password-wrap">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Create a password"
-                        autocomplete="new-password"
-                        minlength="8"
-                        maxlength="128"
-                        required
-                    >
-                    <button
-                        class="toggle-password"
-                        type="button"
-                        data-target="password"
-                        aria-controls="password"
-                        aria-pressed="false"
-                    >Show</button>
-                </div>
-
-                <p class="hint">Use at least 8 characters.</p>
+            <label for="confirm_password">Confirm password</label>
+            <div class="password-container">
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Enter password again"
+                    autocomplete="new-password"
+                    required
+                >
+                <button
+                    type="button"
+                    class="eye-button"
+                    onclick="togglePassword('confirm_password', this)"
+                    aria-label="Show or hide password confirmation"
+                    title="Show or hide password confirmation"
+                >👁</button>
             </div>
 
-            <div class="field">
-                <label for="confirm_password">Confirm password</label>
-
-                <div class="password-wrap">
-                    <input
-                        type="password"
-                        id="confirm_password"
-                        name="confirm_password"
-                        placeholder="Enter your password again"
-                        autocomplete="new-password"
-                        minlength="8"
-                        maxlength="128"
-                        required
-                    >
-                    <button
-                        class="toggle-password"
-                        type="button"
-                        data-target="confirm_password"
-                        aria-controls="confirm_password"
-                        aria-pressed="false"
-                    >Show</button>
-                </div>
+            <div class="terms-checkbox">
+                <label>
+                    <input type="checkbox" name="terms" required>
+                    <span>
+                        I agree to the
+                        <a href="{{ url_for('terms') }}" target="_blank">
+                            Terms &amp; Conditions
+                        </a>
+                        and
+                        <a href="{{ url_for('privacy') }}" target="_blank">
+                            Privacy Policy
+                        </a>.
+                    </span>
+                </label>
             </div>
 
-            <label class="terms" for="terms">
-                <input type="checkbox" id="terms" name="terms" required>
-                <span>
-                    I agree to the
-                    <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
-                    and understand the site's
-                    <a href="{{ url_for('privacy') }}">Privacy Policy</a>.
-                </span>
-            </label>
+            <div
+                id="passwordError"
+                class="error"
+                style="display: none;"
+                role="alert"
+            >
+                Passwords do not match.
+            </div>
 
-            <button class="signup-button" id="signupButton" type="submit">
+            <button type="submit" class="create-button">
                 Create Account
             </button>
+
         </form>
 
-        <p class="login-link">
+        <div class="link">
             Already have an account?
-            <a href="{{ url_for('login') }}">Log in</a>
-        </p>
-    </main>
+            <a href="/login">Sign in</a>
+        </div>
+
+    </div>
 
     <script>
-        const form = document.getElementById("signupForm");
-        const password = document.getElementById("password");
-        const confirmPassword =
-            document.getElementById("confirm_password");
-        const signupButton = document.getElementById("signupButton");
+        function togglePassword(fieldId, button) {
+            const field = document.getElementById(fieldId);
 
-        // Show or hide each password independently.
-        document.querySelectorAll(".toggle-password").forEach(button => {
-            button.addEventListener("click", () => {
-                const field = document.getElementById(
-                    button.dataset.target
-                );
-
-                const showPassword = field.type === "password";
-                field.type = showPassword ? "text" : "password";
-                button.textContent = showPassword ? "Hide" : "Show";
-                button.setAttribute("aria-pressed", String(showPassword));
-            });
-        });
-
-        // Check passwords before sending the form to Flask.
-        form.addEventListener("submit", event => {
-            if (password.value !== confirmPassword.value) {
-                event.preventDefault();
-                confirmPassword.setCustomValidity(
-                    "Passwords do not match."
-                );
-                confirmPassword.reportValidity();
-                confirmPassword.focus();
-                return;
+            if (field.type === "password") {
+                field.type = "text";
+                button.textContent = "🙈";
+            } else {
+                field.type = "password";
+                button.textContent = "👁";
             }
+        }
 
-            confirmPassword.setCustomValidity("");
+        document.getElementById("signupForm").addEventListener(
+            "submit",
+            function (event) {
+                const password =
+                    document.getElementById("password").value;
 
-            // Display the loading state only after browser validation passes.
-            signupButton.disabled = true;
-            signupButton.innerHTML =
-                '<span class="spinner" aria-hidden="true"></span>' +
-                'Creating account...';
-        });
+                const confirmation =
+                    document.getElementById("confirm_password").value;
 
-        confirmPassword.addEventListener("input", () => {
-            confirmPassword.setCustomValidity("");
-        });
+                const error =
+                    document.getElementById("passwordError");
+
+                if (password !== confirmation) {
+                    event.preventDefault();
+                    error.style.display = "block";
+                } else {
+                    error.style.display = "none";
+                }
+            }
+        );
     </script>
 </body>
+
 </html>
-qswqqqqq
