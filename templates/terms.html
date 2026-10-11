@@ -1,68 +1,106 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions | Nevuxa AI</title>
+    <title>Terms & Conditions | Nevuxa</title>
+
     <style>
         body {
             margin: 0;
-            padding: 24px;
-            background: #09090b;
-            color: #eee;
             font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #202536;
             line-height: 1.7;
         }
-        main {
-            max-width: 760px;
-            margin: 30px auto;
-            padding: 28px;
-            background: #18181b;
-            border: 1px solid #333;
-            border-radius: 16px;
+
+        header {
+            background: #171923;
+            color: white;
+            padding: 20px 8%;
+            font-size: 25px;
+            font-weight: bold;
         }
-        h1, h2 { color: #c4b5fd; }
-        a { color: #c4b5fd; }
+
+        header span {
+            color: #8b7cff;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px #00000010;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #5145cd;
+        }
+
+        h2 {
+            margin-top: 28px;
+        }
+
+        a {
+            color: #5145cd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                margin: 20px 12px;
+                padding: 22px;
+            }
+        }
     </style>
 </head>
+
 <body>
-<main>
-    <h1>Nevuxa AI — Terms & Conditions</h1>
-    <p><strong>Last updated:</strong> October 10, 2026</p>
+    <header>Nevuxa<span>.</span></header>
 
-    <p>By creating or using a Nevuxa AI account, you agree to
-    follow these terms.</p>
+    <main>
+        <h1>Terms & Conditions</h1>
 
-    <h2>1. Using Nevuxa</h2>
-    <p>Use Nevuxa lawfully and respectfully. Do not attempt to
-    disrupt the service, access other users' accounts, or misuse
-    the platform.</p>
+        <p>Welcome to Nevuxa. These terms explain the basic rules
+        for using our service.</p>
 
-    <h2>2. Accounts and passwords</h2>
-    <p>Provide accurate account information and keep your login
-    details private. You are responsible for activity conducted
-    through your account, subject to applicable law.</p>
+        <h2>1. Using Nevuxa</h2>
+        <p>Use Nevuxa responsibly and do not misuse the service,
+        attempt unauthorized access, or disrupt its operation.</p>
 
-    <h2>3. AI-generated responses</h2>
-    <p>Nevuxa can make mistakes. Check important information
-    independently and do not rely on AI responses alone for
-    important medical, legal, financial, or safety decisions.</p>
+        <h2>2. Your Account</h2>
+        <p>You are responsible for keeping your account credentials
+        private and for activity performed through your account.</p>
 
-    <h2>4. Availability</h2>
-    <p>Features may change, become unavailable, or be temporarily
-    interrupted. We will handle these matters in accordance with
-    applicable law.</p>
+        <h2>3. AI-Generated Responses</h2>
+        <p>Nevuxa may produce incorrect or incomplete information.
+        Check important information independently before relying on it.</p>
 
-    <h2>5. Misuse</h2>
-    <p>We may take appropriate action against accounts that
-    violate these terms, subject to applicable law.</p>
+        <h2>4. Acceptable Use</h2>
+        <p>Do not use Nevuxa to break the law, harm others,
+        or interfere with the service.</p>
 
-    <h2>6. Contact</h2>
-    <p>For support, contact the official Nevuxa support address
-    provided on the website.</p>
+        <h2>5. Service Availability</h2>
+        <p>Features may change or become temporarily unavailable.
+        We cannot guarantee uninterrupted service.</p>
 
-    <p><a href="{{ url_for('signup') }}">Back to Sign Up</a></p>
-</main>
+        <h2>6. Contact</h2>
+        <p>For questions about these terms, contact the Nevuxa
+        service team through its published support channel.</p>
+
+        <p><a href="/signup">Return to Sign Up</a></p>
+    </main>
+
+    <footer>© 2026 Nevuxa</footer>
 </body>
 </html>
+```
