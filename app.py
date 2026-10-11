@@ -145,7 +145,7 @@ def calculate_math_expression(expression):
                 raise ValueError("Invalid number.")
 
             if abs(node.value) > 10**12:
-                raise ValueError("Number is too long.")
+                raise ValueError("Number is too large.")
 
         if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Pow):
             if not isinstance(node.right, ast.Constant):
@@ -260,6 +260,7 @@ def login():
 # SIGNUP
 # ============================================================
 
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -270,25 +271,35 @@ def signup():
             ""
         )
 
+        # Check that all fields are filled in.
         if not email or not password or not confirm_password:
             return render_template(
                 "signup.html",
                 error="Please fill in all the fields."
             )
 
-        # SERVER-SIDE PASSWORD CONFIRMATION
+        # Require acceptance of the Terms & Conditions.
+        if request.form.get("terms") != "on":
+            return render_template(
+                "signup.html",
+                error="Please accept the Terms & Conditions to continue."
+            )
+
+        # Check that both passwords match.
         if password != confirm_password:
             return render_template(
                 "signup.html",
                 error="Passwords do not match."
             )
 
+        # Require at least 8 characters.
         if len(password) < 8:
             return render_template(
                 "signup.html",
                 error="Password must be at least 8 characters long."
             )
 
+        # Hash the password before saving it.
         hashed_password = generate_password_hash(password)
 
         conn = get_db()
@@ -307,21 +318,19 @@ def signup():
 
             return redirect(url_for("login"))
 
-        
         except sqlite3.IntegrityError:
             conn.close()
 
             return render_template(
                 "signup.html",
-                error="This email is already registered. If you need help, please contact your support email at  Bilvasavaji16@gmail.com."
-            )
-
+                error="An account with this email already exists."
             )
 
     return render_template("signup.html")
 
+
 # ============================================================
-# TERMS & CONDITIONS
+# TERMS & CONDITIONS AND PRIVACY POLICY
 # ============================================================
 
 @app.route("/terms")
@@ -329,31 +338,16 @@ def terms():
     return render_template("terms.html")
 
 
-# ============================================================
-# PRIVACY POLICY
-# ============================================================
-
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html")
-
-
-# ============================================================
-# LOG OUT
-# ============================================================
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-
 
 # ============================================================
 # MY ACCOUNT
 # ============================================================
 
 @app.route("/account")
-def account():https://www.youtube.com/watch?v=X8TtiJ7HbWE
+def account():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -383,7 +377,7 @@ def change_password():
         return render_template(
             "account.html",
             email=session.get("user_email", ""),
-            error="Please complete all the fields."
+            error="Please complete all password fields."
         )
 
     if new_password != confirm_password:
@@ -393,11 +387,11 @@ def change_password():
             error="New passwords do not match."
         )
 
-    if len(new_password) < 6:
+    if len(new_password) < 8:
         return render_template(
             "account.html",
             email=session.get("user_email", ""),
-            error="New password must be at least 6 characters long."
+            error="New password must be at least 8 characters long."
         )
 
     conn = get_db()
@@ -432,7 +426,7 @@ def change_password():
     return render_template(
         "account.html",
         email=session.get("user_email", ""),
-        success="Password was changed successfully."
+        success="Password changed successfully."
     )
 
 
@@ -468,12 +462,10 @@ def chat():
         filename = uploaded_file.filename
         file_bytes = uploaded_file.read()
 
-       
-        if len(file_bytes) > 60 * 1024 * 1024:
+        if len(file_bytes) > 10 * 1024 * 1024:
             return jsonify({
-                "error": "Files must be 60 MB or smaller."
-            }), 413
-
+                "error": "Files must be 10 MB or smaller."
+            }), 400
 
         extension = os.path.splitext(filename)[1].lower()
 
@@ -519,7 +511,7 @@ def chat():
 
     if client is None:
         return jsonify({
-            "error": "AI service is not configured. Please contact Bilvasavaji16@gmail.com for support."
+            "error": "AI service is not configured. Please contact support."
         }), 503
 
     system_message = {
@@ -557,7 +549,7 @@ def chat():
         return jsonify({
             "error": (
                 "Sorry, Nevuxa couldn't process that request. "
-                "If you want to troubleshoot, email Bilvasavaji16@gmail.com for problems."
+                "Please try again later."
             )
         }), 500
 
