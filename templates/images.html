@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Tools - Nevuxa</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            background: #101114;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        main { max-width: 700px; margin: auto; }
+        .panel {
+            padding: 24px;
+            background: #1b1c21;
+            border: 1px solid #34353d;
+            border-radius: 14px;
+        }
+        img {
+            display: none;
+            max-width: 100%;
+            max-height: 400px;
+            margin-top: 16px;
+            border-radius: 10px;
+        }
+        button, a {
+            display: inline-block;
+            margin: 12px 8px 0 0;
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 8px;
+            background: #8b7cff;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #message { color: #c5c5d0; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Nevuxa Image Tools</h1>
+    <section class="panel">
+        <label for="imageInput">Choose an image</label>
+        <p id="message">PNG, JPEG, or WebP. Maximum size: 10 MB.</p>
+
+        <input id="imageInput" type="file"
+               accept="image/png,image/jpeg,image/webp">
+
+        <div>
+            <img id="preview" alt="Selected image preview">
+        </div>
+
+        <button id="removeButton" type="button">Remove Image</button>
+        <a href="{{ url_for('home') }}">Back to Nevuxa</a>
+    </section>
+</main>
+
+<script>
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+const message = document.getElementById("message");
+const removeButton = document.getElementById("removeButton");
+
+let previewUrl = null;
+
+function removeImage() {
+    if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+    }
+
+    imageInput.value = "";
+    preview.removeAttribute("src");
+    preview.style.display = "none";
+    message.textContent =
+        "PNG, JPEG, or WebP. Maximum size: 10 MB.";
+}
+
+imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+
+    if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+    }
+
+    preview.removeAttribute("src");
+    preview.style.display = "none";
+
+    if (!file) return;
+
+    const allowedTypes = [
+        "image/png", "image/jpeg", "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        message.textContent =
+            "Please choose a PNG, JPEG, or WebP image.";
+        imageInput.value = "";
+        return;
+    }
+
+    if (file.size > 60 * 1024 * 1024) {
+        message.textContent = "Images must be 60 MB or smaller.";
+        imageInput.value = "";
+        return;
+    }
+
+    previewUrl = URL.createObjectURL(file);
+    preview.src = previewUrl;
+    preview.style.display = "block";
+    message.textContent = "Image preview ready.";
+});
+
+removeButton.addEventListener("click", removeImage);
+</script>
+</body>
+</html>
