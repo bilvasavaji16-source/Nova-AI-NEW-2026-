@@ -1,10 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login - Nevuxa AI</title>
+    <title>Log In | Nevuxa</title>
 
     <style>
         * {
@@ -14,62 +14,64 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background: #000;
-            color: white;
-            font-family: Arial, sans-serif;
-
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #0b0b12;
+            color: #f5f5ff;
+            font-family: Arial, sans-serif;
         }
 
         .login-box {
-            width: 360px;
-            padding: 35px;
-
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 18px;
-
-            box-shadow:
-                0 0 30px rgba(255, 255, 255, 0.05);
+            width: 100%;
+            max-width: 390px;
+            padding: 34px;
+            background: #171722;
+            border: 1px solid #303044;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px #00000055;
         }
 
-        h1 {
+        .brand {
             text-align: center;
-            margin-top: 0;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: -1px;
             margin-bottom: 8px;
+        }
+
+        .brand span {
+            color: #9b8cff;
         }
 
         .subtitle {
             text-align: center;
-            color: #aaa;
-            margin-bottom: 30px;
+            color: #aaaabd;
+            margin-bottom: 28px;
         }
 
         label {
             display: block;
-            margin-bottom: 7px;
-            color: #ddd;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
         input {
+            display: block;
             width: 100%;
             padding: 13px;
             margin-bottom: 18px;
-
-            border-radius: 10px;
-            border: 1px solid #444;
-
-            background: #050505;
+            background: #0d0d15;
             color: white;
-
+            border: 1px solid #3a3a50;
+            border-radius: 10px;
             font-size: 15px;
-            outline: none;
         }
 
         input:focus {
-            border-color: #777;
+            outline: 2px solid #8270ff;
+            border-color: transparent;
         }
 
         .password-container {
@@ -82,183 +84,130 @@
 
         .eye-button {
             position: absolute;
-
-            right: 8px;
-            top: 0;
-
-            height: 44px;
+            right: 5px;
+            top: 2px;
             width: 40px;
-
-            border: none;
+            height: 42px;
+            border: 0;
             background: transparent;
-
-            color: #aaa;
-
+            color: #c5c5d8;
             cursor: pointer;
-            font-size: 20px;
-        }
-
-        .eye-button:hover {
-            color: white;
+            font-size: 19px;
         }
 
         .login-button {
             width: 100%;
-            padding: 13px;
-
-            border: none;
+            padding: 14px;
+            margin-top: 4px;
+            background: #8270ff;
+            color: white;
+            border: 0;
             border-radius: 10px;
-
-            background: white;
-            color: black;
-
             font-size: 16px;
             font-weight: bold;
-
             cursor: pointer;
         }
 
         .login-button:hover {
-            background: #ddd;
+            background: #6e5be8;
         }
 
         .signup-text {
+            margin-top: 23px;
             text-align: center;
-            margin-top: 20px;
-            color: #aaa;
+            color: #aaaabd;
+            font-size: 14px;
         }
 
-        .signup-text a {
-            color: white;
+        a {
+            color: #b3a8ff;
             text-decoration: none;
         }
 
-        .signup-text a:hover {
+        a:hover {
             text-decoration: underline;
         }
 
         .error {
-            background: #351111;
-            border: 1px solid #772222;
-
-            color: #ffaaaa;
-
-            padding: 10px;
-            border-radius: 8px;
-
+            padding: 11px;
             margin-bottom: 18px;
-
-            text-align: center;
+            border-radius: 9px;
+            background: #391b26;
+            border: 1px solid #713448;
+            color: #ffb9c8;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
+    <main class="login-box">
+        <div class="brand">Nevuxa<span>.</span></div>
+        <div class="subtitle">Sign in to continue</div>
 
-<div class="login-box">
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
 
-    <h1>Nevuxa AI</h1>
-
-    <div class="subtitle">
-        Sign in to continue
-    </div>
-
-    {% if error %}
-        <div class="error">
-            {{ error }}
-        </div>
-    {% endif %}
-
-    <form method="POST">
-
-        <label for="email">
-            Email
-        </label>
-
-        <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            required
-        >
-
-        <label for="password">
-            Password
-        </label>
-
-        <div class="password-container">
-
+        <form method="POST" action="{{ url_for('login') }}">
+            <label for="email">Email</label>
             <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                autocomplete="email"
                 required
             >
 
-            <button
-                type="button"
-                class="eye-button"
-                id="eyeButton"
-                onclick="togglePassword()"
-                title="Show password"
-            >
-                👁
+            <label for="password">Password</label>
+
+            <div class="password-container">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="eye-button"
+                    id="eyeButton"
+                    onclick="togglePassword()"
+                    aria-label="Show password"
+                >👁</button>
+            </div>
+
+            <button type="submit" class="login-button">
+                Log In
             </button>
+        </form>
 
+        <div class="signup-text">
+            Don't have an account?
+            <a href="{{ url_for('signup') }}">Sign up</a>
         </div>
+    </main>
 
-        <button
-            type="submit"
-            class="login-button"
-        >
-            Log In
-        </button>
+    <script>
+        function togglePassword() {
+            const password = document.getElementById("password");
+            const eyeButton = document.getElementById("eyeButton");
 
-    </form>
-
-    <div class="signup-text">
-
-        Don't have an account?
-
-        <a href="/signup">
-            Sign up
-        </a>
-
-    </div>
-
-</div>
-
-<script>
-
-function togglePassword() {
-
-    const password =
-        document.getElementById("password");
-
-    const eyeButton =
-        document.getElementById("eyeButton");
-
-    if (password.type === "password") {
-
-        password.type = "text";
-
-        eyeButton.textContent = "🙈";
-
-        eyeButton.title = "Hide password";
-
-    } else {
-
-        password.type = "password";
-
-        eyeButton.textContent = "👁";
-
-        eyeButton.title = "Show password";
-    }
-}
-
-</script>
-
+            if (password.type === "password") {
+                password.type = "text";
+                eyeButton.textContent = "🙈";
+                eyeButton.setAttribute("aria-label", "Hide password");
+            } else {
+                password.type = "password";
+                eyeButton.textContent = "👁";
+                eyeButton.setAttribute("aria-label", "Show password");
+            }
+        }
+    </script>
 </body>
 </html>
+```
