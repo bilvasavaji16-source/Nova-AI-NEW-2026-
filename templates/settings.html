@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Personal Settings - Nevuxa</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            background: #101114;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        main { max-width: 650px; margin: auto; }
+        .panel {
+            background: #1b1c21;
+            border: 1px solid #34353d;
+            border-radius: 14px;
+            padding: 24px;
+        }
+        label { display: block; margin: 20px 0 8px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444650;
+            border-radius: 8px;
+            background: #101114;
+            color: white;
+        }
+        button, .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: #8b7cff;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .success { color: #80e5a2; }
+        .error { color: #ff9292; }
+        .muted { color: #b9bac5; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Personal Settings</h1>
+    <p class="muted">Customize your Nevuxa experience.</p>
+
+    <section class="panel">
+        {% if error %}
+            <p class="error" role="alert">{{ error }}</p>
+        {% endif %}
+        {% if success %}
+            <p class="success" role="status">{{ success }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('settings') }}">
+            <label for="display_name">Display name</label>
+            <input id="display_name" name="display_name"
+                   maxlength="60"
+                   value="{{ user['display_name'] if user else '' }}"
+                   placeholder="Your display name">
+
+            <label for="theme">Appearance</label>
+            <select id="theme" name="theme">
+                <option value="dark"
+                    {% if not user or user['theme'] == 'dark' %}selected{% endif %}>
+                    Dark
+                </option>
+                <option value="light"
+                    {% if user and user['theme'] == 'light' %}selected{% endif %}>
+                    Light
+                </option>
+            </select>
+
+            <label for="timezone">Time zone</label>
+            {% set current_timezone = user['timezone'] if user else 'Asia/Kolkata' %}
+            <select id="timezone" name="timezone">
+                {% for zone in [
+                    'Asia/Kolkata', 'UTC', 'America/New_York',
+                    'America/Los_Angeles', 'Europe/London',
+                    'Europe/Paris', 'Asia/Tokyo', 'Australia/Sydney'
+                ] %}
+                    <option value="{{ zone }}"
+                        {% if current_timezone == zone %}selected{% endif %}>
+                        {{ zone }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Save Settings</button>
+        </form>
+
+        <a class="back" href="{{ url_for('home') }}">Back to Nevuxa</a>
+    </section>
+</main>
+</body>
+</html>
