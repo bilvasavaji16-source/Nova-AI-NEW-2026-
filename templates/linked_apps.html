@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linked Apps - Nevuxa</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            background: #101114;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        main { max-width: 650px; margin: auto; }
+        .app-card {
+            background: #1b1c21;
+            border: 1px solid #34353d;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 14px 0;
+        }
+        button, a {
+            display: inline-block;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 8px;
+            background: #8b7cff;
+            color: white;
+            text-decoration: none;
+        }
+        button:disabled { opacity: 0.65; }
+        .muted { color: #c5c5d0; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Linked Apps</h1>
+    <p class="muted">Connect supported services to Nevuxa.</p>
+
+    <section class="app-card">
+        <h2>Google</h2>
+        <p>Google account integration.</p>
+        <button type="button" disabled>Coming soon</button>
+    </section>
+
+    <section class="app-card">
+        <h2>GitHub</h2>
+        <p>Repository and developer-tool integration.</p>
+        <button type="button" disabled>Coming soon</button>
+    </section>
+
+    <section class="app-card">
+        <h2>Microsoft</h2>
+        <p>Supported Microsoft service integration.</p>
+        <button type="button" disabled>Coming soon</button>
+    </section>
+
+    <a href="{{ url_for('home') }}">Back to Nevuxa</a>
+</main>
+</body>
+</html>
